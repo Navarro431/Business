@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitAI - Personal Trainer com IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1b3a 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        body.light {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #1a202c;
+        }
+
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            padding: 20px;
+            background: rgba(26, 27, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        body.light .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        body.light .icon-btn {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-btn:hover {
+            background: #00ff88;
+            border-color: #00ff88;
+            transform: translateY(-2px);
+        }
+
+        .level-badge {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 14px;
+            color: #0a0e27;
+            margin-bottom: 15px;
+            width: fit-content;
+        }
+
+        .xp-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .xp-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            transition: width 0.5s ease;
+        }
+
+        .page {
+            display: none;
+            padding: 20px;
+            padding-bottom: 100px;
+            animation: slideIn 0.4s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: #a0aec0;
+            font-size: 16px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #a0aec0;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: inherit;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        body.light .form-input, body.light .form-select {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        body.light .checkbox-item {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .checkbox-item:hover,
+        .checkbox-item.selected {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        body.light .stat-card {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff88;
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #a0aec0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: #00ff88;
+            margin-top: 5px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            margin: 30px 0 15px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        body.light .action-card {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 30px;
+        }
+
+        .achievement-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        body.light .achievement-card {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .achievement-card.locked {
+            opacity: 0.5;
+        }
+
+        .achievement-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            flex-shrink: 0;
+        }
+
+        .achievement-card.locked .achievement-icon {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .workout-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        body.light .workout-card {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .workout-card:hover {
+            border-color: #00ff88;
+            transform: translateX(5px);
+        }
+
+        .workout-card.completed {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .completed-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #0a0e27;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .camera-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .camera-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        body.light .camera-option {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .camera-option:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #0a0e27;
+            border: none;
+            border-radius: 15px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: inherit;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.light .btn-secondary {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-container {
+            height: calc(100vh - 300px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px;
+            border-radius: 18px;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #0a0e27;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.ai {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom-left-radius: 5px;
+        }
+
+        body.light .message.ai {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+
+        .chat-input-container {
+            padding: 15px 20px;
+            background: rgba(26, 27, 58, 0.95);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        body.light .chat-input-container {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        body.light .chat-input {
+            background: #f8f9fa;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-input:focus {
+            border-color: #00ff88;
+        }
+
+        .send-btn {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            color: #0a0e27;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .ai-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .ai-tab {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .ai-tab.active {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .ai-tab-icon {
+            font-size: 30px;
+            margin-bottom: 5px;
+        }
+
+        .ai-tab-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 430px;
+            width: 100%;
+            background: rgba(26, 27, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        body.light .bottom-nav {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            color: #a0aec0;
+            font-size: 24px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: #1a2342;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: scaleIn 0.3s ease;
+        }
+
+        body.light .modal-content {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+        }
+
+        .close-btn:hover {
+            background: #ff3d71;
+            border-color: #ff3d71;
+            transform: rotate(90deg);
+        }
+
+        .exercise-image {
+            width: 100%;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .exercise-instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .exercise-instructions h4 {
+            font-size: 14px;
+            color: #00ff88;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .exercise-instructions p {
+            line-height: 1.6;
+            color: #a0aec0;
+        }
+
+        .language-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .language-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        body.light .language-option {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .language-option:hover,
+        .language-option.active {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .language-flag {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .settings-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 18px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        body.light .settings-item {
+            background: white;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-item:hover {
+            border-color: #00ff88;
+            transform: translateX(5px);
+        }
+
+        .settings-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        .toggle input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            border-color: transparent;
+        }
+
+        .toggle input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .welcome-text {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #0a0e27;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Login/Cadastro Screen -->
+        <div id="loginScreen" class="login-container">
+            <div class="login-logo">FitAI</div>
+            <div class="login-subtitle">Seu Personal Trainer com Inteligência Artificial</div>
+
+            <div id="loginForm" style="width: 100%; max-width: 400px;">
+                <h2 style="margin-bottom: 20px; text-align: center;">Criar Conta</h2>
+                
+                <div class="form-group">
+                    <label class="form-label">Nome Completo</label>
+                    <input type="text" id="userName" class="form-input" placeholder="João Silva">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Idade</label>
+                    <input type="number" id="userAge" class="form-input" placeholder="25">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sexo</label>
+                    <select id="userGender" class="form-select">
+                        <option value="">Selecione</option>
+                        <option value="masculino">Masculino</option>
+                        <option value="feminino">Feminino</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Altura (cm)</label>
+                    <input type="number" id="userHeight" class="form-input" placeholder="175">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Peso Atual (kg)</label>
+                    <input type="number" id="userWeight" class="form-input" placeholder="80">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Objetivo Principal</label>
+                    <select id="userGoal" class="form-select" onchange="toggleWeightGoal()">
+                        <option value="">Selecione</option>
+                        <option value="bulking">💪 Ganho de Massa (Bulking)</option>
+                        <option value="cutting">🔥 Perda de Gordura (Cutting)</option>
+                        <option value="manutencao">⚖️ Manutenção de Peso</option>
+                        <option value="condicionamento">🏃 Condicionamento Físico</option>
+                        <option value="forca">🏋️ Ganho de Força</option>
+                        <option value="definicao">✨ Definição Muscular</option>
+                        <option value="saude">❤️ Saúde e Bem-Estar</option>
+                        <option value="flexibilidade">🧘 Flexibilidade e Mobilidade</option>
+                    </select>
+                </div>
+
+                <div class="form-group hidden" id="weightGoalGroup">
+                    <label class="form-label" id="weightGoalLabel">Quanto deseja perder? (kg)</label>
+                    <input type="number" id="weightGoalAmount" class="form-input" placeholder="5" min="1" max="50">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nível de Treino</label>
+                    <select id="userLevel" class="form-select">
+                        <option value="">Selecione</option>
+                        <option value="iniciante">Iniciante</option>
+                        <option value="intermediario">Intermediário</option>
+                        <option value="avancado">Avançado</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Frequência de Treino Semanal</label>
+                    <select id="userFrequency" class="form-select">
+                        <option value="">Selecione</option>
+                        <option value="2">2x por semana</option>
+                        <option value="3">3x por semana</option>
+                        <option value="4">4x por semana</option>
+                        <option value="5">5x por semana</option>
+                        <option value="6">6x por semana</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Restrições Alimentares</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item" onclick="toggleCheckbox(this, 'vegano', 'restrictions')">Vegano</div>
+                        <div class="checkbox-item" onclick="toggleCheckbox(this, 'vegetariano', 'restrictions')">Vegetariano</div>
+                        <div class="checkbox-item" onclick="toggleCheckbox(this, 'lactose', 'restrictions')">Sem Lactose</div>
+                        <div class="checkbox-item" onclick="toggleCheckbox(this, 'gluten', 'restrictions')">Sem Glúten</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Equipamentos Disponíveis</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item" onclick="toggleCheckbox(this, 'academia', 'equipment')">Academia</div>
+                        <div class="checkbox-item" onclick="toggleCheckbox(this, 'casa', 'equipment')">Casa</div>
+                        <div class="checkbox-item" onclick="toggleCheckbox(this, 'halteres', 'equipment')">Halteres</div>
+                        <div class="checkbox-item" onclick="toggleCheckbox(this, 'barras', 'equipment')">Barras</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Idioma Preferido</label>
+                    <select id="userLanguage" class="form-select">
+                        <option value="pt">Português (Brasil) 🇧🇷</option>
+                        <option value="en">English 🇺🇸</option>
+                        <option value="es">Español 🇪🇸</option>
+                    </select>
+                </div>
+
+                <button class="btn" onclick="completeRegistration()">🚀 Começar Minha Jornada</button>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="header hidden" id="mainHeader">
+            <div class="logo">FitAI</div>
+            <div class="header-icons">
+                <div class="icon-btn" onclick="alert('🔔 Você tem 2 notificações!')">🔔</div>
+                <div class="icon-btn" onclick="switchPage('settings')">⚙️</div>
+            </div>
+        </header>
+
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page">
+            <div style="margin-bottom: 30px;">
+                <div class="welcome-text">Olá, <span id="displayUserName">Usuário</span>! 👋</div>
+                <div style="color: #a0aec0; font-size: 16px; margin-bottom: 15px;">Pronto para treinar hoje?</div>
+                <div class="level-badge">
+                    ⭐ Nível <span id="userLevelNumber">1</span>
+                </div>
+                <div class="xp-bar">
+                    <div class="xp-fill" id="xpFill" style="width: 0%"></div>
+                </div>
+                <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">
+                    <span id="currentXP">0</span> / <span id="nextLevelXP">100</span> XP
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Calorias Hoje</div>
+                    <div class="stat-value"><span id="caloriesConsumed">0</span></div>
+                    <div class="stat-change">Meta: <span id="caloriesGoal">2100</span> kcal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Treinos Semana</div>
+                    <div class="stat-value"><span id="workoutsCompleted">0</span>/<span id="workoutsGoal">5</span></div>
+                    <div class="stat-change" id="workoutProgress">0% completo</div>
+                </div>
+            </div>
+
+            <div class="section-title">⚡ Ações Rápidas</div>
+            <div class="actions-grid">
+                <div class="action-card" onclick="switchPage('workouts')">
+                    <div class="action-icon">⚡</div>
+                    <div>Iniciar Treino</div>
+                </div>
+                <div class="action-card" onclick="switchPage('nutrition')">
+                    <div class="action-icon">📸</div>
+                    <div>Escanear Comida</div>
+                </div>
+                <div class="action-card" onclick="switchPage('ai')">
+                    <div class="action-icon">💬</div>
+                    <div>Coach IA</div>
+                </div>
+                <div class="action-card" onclick="switchPage('progress')">
+                    <div class="action-icon">📊</div>
+                    <div>Ver Progresso</div>
+                </div>
+            </div>
+
+            <div class="section-title">🏆 Suas Conquistas</div>
+            <div id="achievementsList"></div>
+        </div>
+
+        <!-- Workouts Page -->
+        <div id="workouts" class="page">
+            <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 20px;">Biblioteca de Exercícios</h1>
+            
+            <div style="margin-bottom: 30px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #00ff88;">💪 Peito</h2>
+                <div id="chestExercises"></div>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #00d4ff;">🦾 Costas</h2>
+                <div id="backExercises"></div>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #ff6b35;">🏋️ Pernas</h2>
+                <div id="legExercises"></div>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #ffd700;">🔥 Braços</h2>
+                <div id="armExercises"></div>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <h2 style="font-size: 18px; margin-bottom: 15px; color: #ff69b4;">💫 Ombros</h2>
+                <div id="shoulderExercises"></div>
+            </div>
+        </div>
+
+        <!-- Nutrition Page -->
+        <div id="nutrition" class="page">
+            <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 20px;">Nutrição</h1>
+
+            <div class="section-title">📸 Reconhecimento de Alimentos</div>
+
+            <input type="file" id="foodUpload" accept="image/*" onchange="recognizeFood(event)">
+            <input type="file" id="foodCamera" accept="image/*" capture="environment" onchange="recognizeFood(event)">
+
+            <div class="camera-options">
+                <div class="camera-option" onclick="document.getElementById('foodCamera').click()">
+                    <div style="font-size: 40px; margin-bottom: 10px;">📸</div>
+                    <div style="font-weight: 600;">Tirar Foto</div>
+                    <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">Usar câmera</div>
+                </div>
+                <div class="camera-option" onclick="document.getElementById('foodUpload').click()">
+                    <div style="font-size: 40px; margin-bottom: 10px;">🖼️</div>
+                    <div style="font-weight: 600;">Upload</div>
+                    <div style="font-size: 12px; color: #a0aec0; margin-top: 5px;">Escolher foto</div>
+                </div>
+            </div>
+
+            <div id="foodResult" class="hidden" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 20px; margin-top: 20px;"></div>
+        </div>
+
+        <!-- Progress Page -->
+        <div id="progress" class="page">
+            <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 20px;">Seu Progresso</h1>
+
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 25px; margin-bottom: 25px;">
+                <h3 style="margin-bottom: 20px;">Estatísticas</h3>
+                <div class="stats-grid" style="margin-bottom: 0;">
+                    <div class="stat-card">
+                        <div class="stat-label">Peso Atual</div>
+                        <div class="stat-value"><span id="currentWeight">0</span>kg</div>
+                        <div class="stat-change">IMC: <span id="currentBMI">0</span></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Objetivo</div>
+                        <div class="stat-value" id="goalDisplay">-</div>
+                        <div class="stat-change" id="levelDisplay">-</div>
+                    </div>
+                </div>
+                
+                <div id="weightGoalProgress" class="hidden" style="margin-top: 20px; padding: 20px; background: rgba(0, 255, 136, 0.05); border-radius: 15px; border: 1px solid #00ff88;">
+                    <h4 style="margin-bottom: 10px; color: #00ff88;">🎯 Meta de Peso</h4>
+                    <p style="color: #a0aec0; margin-bottom: 10px;">
+                        Peso Inicial: <span id="initialWeight">0</span>kg → Meta: <span id="targetWeight">0</span>kg
+                    </p>
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="weightProgressBar" style="width: 0%"></div>
+                    </div>
+                    <p style="color: #a0aec0; font-size: 12px; margin-top: 5px;">
+                        Faltam <span id="remainingWeight">0</span>kg para atingir sua meta!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Chat Page -->
+        <div id="ai" class="page">
+            <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 20px;">Coach Virtual IA</h1>
+
+            <div class="ai-tabs">
+                <div class="ai-tab active" onclick="switchAI('workout')">
+                    <div class="ai-tab-icon">💪</div>
+                    <div class="ai-tab-title">IA de Treino</div>
+                </div>
+                <div class="ai-tab" onclick="switchAI('nutrition')">
+                    <div class="ai-tab-icon">🥗</div>
+                    <div class="ai-tab-title">IA de Nutrição</div>
+                </div>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem...">
+                    <button class="send-btn" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settings" class="page">
+            <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 20px;">Configurações</h1>
+
+            <h3 style="font-size: 16px; margin: 20px 0 15px;">Perfil</h3>
+            <div class="settings-item">
+                <div class="settings-left">
+                    <span style="font-size: 24px;">👤</span>
+                    <div>
+                        <h4 id="profileName">Usuário</h4>
+                        <p style="font-size: 12px; color: #a0aec0;" id="profileDetails">Ver detalhes</p>
+                    </div>
+                </div>
+                <span>→</span>
+            </div>
+
+            <h3 style="font-size: 16px; margin: 20px 0 15px;">Aparência</h3>
+            <div class="settings-item">
+                <div class="settings-left">
+                    <span style="font-size: 24px;">💡</span>
+                    <div>
+                        <h4>Tema</h4>
+                        <p style="font-size: 12px; color: #a0aec0;">Modo escuro ativado</p>
+                    </div>
+                </div>
+                <label class="toggle">
+                    <input type="checkbox" id="themeToggle" checked onchange="toggleTheme()">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <h3 style="font-size: 16px; margin: 20px 0 15px;">Idioma</h3>
+            <div class="settings-item" onclick="showModal('language')">
+                <div class="settings-left">
+                    <span style="font-size: 24px;">🌍</span>
+                    <div>
+                        <h4>Idioma</h4>
+                        <p style="font-size: 12px; color: #a0aec0;" id="currentLanguageDisplay">Português (Brasil)</p>
+                    </div>
+                </div>
+                <span>→</span>
+            </div>
+
+            <button class="btn btn-secondary" style="margin-top: 30px;" onclick="logout()">🚪 Sair da Conta</button>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav hidden" id="mainNav">
+            <div class="nav-item active" onclick="switchPage('dashboard')">
+                <span>🏠</span>
+                <span class="nav-label">Início</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('workouts')">
+                <span>💪</span>
+                <span class="nav-label">Treinos</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('nutrition')">
+                <span>🍎</span>
+                <span class="nav-label">Nutrição</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('progress')">
+                <span>📊</span>
+                <span class="nav-label">Progresso</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('ai')">
+                <span>💬</span>
+                <span class="nav-label">IA</span>
+            </div>
+        </nav>
+
+        <!-- Exercise Modal -->
+        <div id="exerciseModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="exerciseTitle">Exercício</h2>
+                    <div class="close-btn" onclick="closeModal('exerciseModal')">×</div>
+                </div>
+                <div class="exercise-image" id="exerciseIcon">🏋️</div>
+                <div class="exercise-instructions">
+                    <h4>📋 Como Executar</h4>
+                    <p id="exerciseExecution"></p>
+                </div>
+                <div class="exercise-instructions">
+                    <h4>💪 Músculos Trabalhados</h4>
+                    <p id="exerciseMuscles"></p>
+                </div>
+                <div class="exercise-instructions">
+                    <h4>📊 Volume Recomendado</h4>
+                    <p id="exerciseVolume"></p>
+                </div>
+                <button class="btn" onclick="markExerciseComplete()" id="completeExerciseBtn">✅ Marcar como Realizado</button>
+            </div>
+        </div>
+
+        <!-- Language Modal -->
+        <div id="languageModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Escolher Idioma</h2>
+                    <div class="close-btn" onclick="closeModal('languageModal')">×</div>
+                </div>
+
+                <div class="language-grid">
+                    <div class="language-option active" data-lang="pt" onclick="changeLanguage('pt', this)">
+                        <div class="language-flag">🇧🇷</div>
+                        <div>Português</div>
+                    </div>
+                    <div class="language-option" data-lang="en" onclick="changeLanguage('en', this)">
+                        <div class="language-flag">🇺🇸</div>
+                        <div>English</div>
+                    </div>
+                    <div class="language-option" data-lang="es" onclick="changeLanguage('es', this)">
+                        <div class="language-flag">🇪🇸</div>
+                        <div>Español</div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="saveLanguageAndClose()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Global variables
+        let userData = {
+            name: '',
+            age: 0,
+            gender: '',
+            height: 0,
+            weight: 0,
+            weightGoal: 0,
+            weightGoalType: '', // 'lose' or 'gain'
+            goal: '',
+            level: '',
+            frequency: 0,
+            restrictions: [],
+            equipment: [],
+            language: 'pt',
+            streak: 0,
+            workoutsCompleted: 0,
+            calories: 0,
+            achievements: [],
+            userLevel: 1,
+            xp: 0,
+            completedExercises: []
+        };
+
+        let selectedRestrictions = [];
+        let selectedEquipment = [];
+        let currentAI = 'workout';
+        let currentExerciseId = null;
+
+        const languageNames = {
+            pt: 'Português (Brasil)',
+            en: 'English',
+            es: 'Español'
+        };
+
+        // Exercise database
+        const exercises = {
+            chest: [
+                { id: 'supino-reto', name: 'Supino Reto com Barra', icon: '🏋️', execution: 'Deite-se no banco com os pés firmes no chão. Segure a barra com as mãos afastadas na largura dos ombros. Desça a barra controladamente até o peito e empurre de volta.', volume: '4 séries × 8-12 reps', muscles: 'Peitoral maior, tríceps, deltoides', badge: 'Principal' },
+                { id: 'supino-inclinado', name: 'Supino Inclinado com Halteres', icon: '🏋️', execution: 'No banco inclinado a 30-45°, segure os halteres e pressione para cima mantendo o controle do movimento.', volume: '3 séries × 10-15 reps', muscles: 'Peitoral superior, deltoides' },
+                { id: 'crucifixo', name: 'Crucifixo na Máquina', icon: '💪', execution: 'Na máquina, abra os braços mantendo leve flexão nos cotovelos e junte à frente do peito com movimento controlado.', volume: '3 séries × 12-15 reps', muscles: 'Peitoral' },
+                { id: 'supino-declinado', name: 'Supino Declinado', icon: '🏋️', execution: 'No banco declinado, desça a barra até o peitoral inferior e empurre de volta com controle.', volume: '3 séries × 8-12 reps', muscles: 'Peitoral inferior, tríceps' },
+                { id: 'flexao', name: 'Flexão de Braço', icon: '💪', execution: 'Posição de prancha, desça o corpo até o peito quase tocar o chão e empurre de volta.', volume: '4 séries × máximo de reps', muscles: 'Peitoral, tríceps, core' }
+            ],
+            back: [
+                { id: 'barra-fixa', name: 'Barra Fixa', icon: '💪', execution: 'Segure a barra com pegada pronada (palmas para frente), puxe o corpo até o queixo passar da barra. Desça controladamente.', volume: '4 séries × 8-12 reps', muscles: 'Grande dorsal, bíceps' },
+                { id: 'remada-curvada', name: 'Remada Curvada com Barra', icon: '🏋️', execution: 'Incline o tronco a 45°, puxe a barra em direção ao abdômen mantendo as costas retas.', volume: '4 séries × 8-12 reps', muscles: 'Grande dorsal, trapézio' },
+                { id: 'puxada-frontal', name: 'Puxada Frontal', icon: '💪', execution: 'Sentado na máquina, puxe a barra até a altura do peito mantendo as costas retas.', volume: '4 séries × 10-12 reps', muscles: 'Grande dorsal, bíceps' },
+                { id: 'remada-unilateral', name: 'Remada Unilateral com Halter', icon: '🏋️', execution: 'Apoie um joelho e uma mão no banco, puxe o halter em direção ao quadril.', volume: '3 séries × 10-12 reps cada lado', muscles: 'Grande dorsal, trapézio' },
+                { id: 'levantamento-terra', name: 'Levantamento Terra', icon: '🏋️', execution: 'Com a barra no chão, flexione os joelhos e quadril, mantenha as costas retas e levante a barra.', volume: '4 séries × 6-8 reps', muscles: 'Costas, glúteos, posterior' }
+            ],
+            legs: [
+                { id: 'agachamento', name: 'Agachamento Livre', icon: '🏋️', execution: 'Com a barra nas costas, desça até as coxas ficarem paralelas ao chão. Mantenha as costas retas e suba com força.', volume: '4 séries × 8-12 reps', muscles: 'Quadríceps, glúteos, posterior' },
+                { id: 'leg-press', name: 'Leg Press 45°', icon: '🦵', execution: 'Na máquina, empurre a plataforma com os pés na largura dos ombros. Desça até 90° e empurre de volta.', volume: '4 séries × 10-15 reps', muscles: 'Quadríceps, glúteos' },
+                { id: 'cadeira-extensora', name: 'Cadeira Extensora', icon: '🦵', execution: 'Sentado na máquina, estenda as pernas completamente e retorne controladamente.', volume: '3 séries × 12-15 reps', muscles: 'Quadríceps' },
+                { id: 'cadeira-flexora', name: 'Cadeira Flexora', icon: '🦵', execution: 'Deitado na máquina, flexione as pernas trazendo os calcanhares em direção aos glúteos.', volume: '3 séries × 12-15 reps', muscles: 'Posterior de coxa' },
+                { id: 'stiff', name: 'Stiff', icon: '🏋️', execution: 'Com a barra, mantenha as pernas levemente flexionadas e desça inclinando o tronco até sentir alongamento.', volume: '3 séries × 10-12 reps', muscles: 'Posterior de coxa, glúteos' },
+                { id: 'panturrilha-em-pe', name: 'Panturrilha em Pé', icon: '🦵', execution: 'Na máquina, eleve os calcanhares o máximo possível e desça controladamente.', volume: '4 séries × 15-20 reps', muscles: 'Panturrilha' }
+            ],
+            arms: [
+                { id: 'rosca-direta', name: 'Rosca Direta com Barra', icon: '💪', execution: 'De pé, segure a barra e flexione os cotovelos trazendo a barra até o peito. Mantenha os cotovelos fixos.', volume: '3 séries × 10-12 reps', muscles: 'Bíceps' },
+                { id: 'triceps-testa', name: 'Tríceps Testa', icon: '💪', execution: 'Deitado, segure a barra W acima da cabeça. Flexione apenas os cotovelos descendo a barra até perto da testa.', volume: '3 séries × 10-12 reps', muscles: 'Tríceps' },
+                { id: 'rosca-alternada', name: 'Rosca Alternada com Halteres', icon: '💪', execution: 'De pé, alterne a flexão dos cotovelos elevando os halteres até o ombro.', volume: '3 séries × 10-12 reps cada braço', muscles: 'Bíceps' },
+                { id: 'triceps-corda', name: 'Tríceps na Polia com Corda', icon: '💪', execution: 'De frente para a polia, empurre a corda para baixo estendendo completamente os cotovelos.', volume: '3 séries × 12-15 reps', muscles: 'Tríceps' },
+                { id: 'rosca-martelo', name: 'Rosca Martelo', icon: '💪', execution: 'Com halteres em pegada neutra, flexione os cotovelos mantendo as palmas voltadas uma para outra.', volume: '3 séries × 10-12 reps', muscles: 'Bíceps, antebraço' }
+            ],
+            shoulders: [
+                { id: 'desenvolvimento', name: 'Desenvolvimento com Barra', icon: '🏋️', execution: 'Sentado, pressione a barra acima da cabeça até extensão completa dos braços.', volume: '4 séries × 8-12 reps', muscles: 'Deltoides, tríceps' },
+                { id: 'elevacao-lateral', name: 'Elevação Lateral', icon: '💪', execution: 'De pé, eleve os halteres lateralmente até a altura dos ombros mantendo leve flexão nos cotovelos.', volume: '3 séries × 12-15 reps', muscles: 'Deltoides lateral' },
+                { id: 'elevacao-frontal', name: 'Elevação Frontal', icon: '💪', execution: 'De pé, eleve o halter à frente até a altura dos ombros.', volume: '3 séries × 12-15 reps', muscles: 'Deltoides anterior' },
+                { id: 'crucifixo-invertido', name: 'Crucifixo Invertido', icon: '💪', execution: 'Inclinado à frente, abra os halteres lateralmente trabalhando a parte posterior do ombro.', volume: '3 séries × 12-15 reps', muscles: 'Deltoides posterior' }
+            ]
+        };
+
+        // AI Knowledge Base
+        const aiKnowledge = {
+            workout: {
+                treino: ['Para hipertrofia, foque em 3-4 séries de 8-12 repetições com 60-90 segundos de descanso. O tempo sob tensão é crucial!', 'Lembre-se: progressão de carga é a chave. Aumente 2-5% quando conseguir completar todas as séries com boa forma.', 'Para iniciantes, recomendo treino ABC: A=Peito+Tríceps, B=Costas+Bíceps, C=Pernas+Ombros.'],
+                musculacao: ['Exercícios compostos (agachamento, supino, levantamento terra) devem ser a base do seu treino. Eles recrutam mais fibras musculares!', 'Mantenha 48-72h de descanso entre treinos do mesmo grupo muscular para recuperação adequada.'],
+                hipertrofia: ['Para ganho de massa, consuma 1.6-2.2g de proteína por kg de peso corporal diariamente.', 'O músculo cresce no descanso! Durma 7-9 horas por noite.'],
+                perda: ['Para perda de gordura, mantenha déficit calórico de 300-500 kcal e treine com pesos para preservar massa muscular.', 'Cardio HIIT 2-3x por semana ajuda na perda de gordura sem comprometer os ganhos.'],
+                iniciante: ['Como iniciante, foque em aprender a forma correta antes de aumentar a carga. Qualidade > Quantidade!', 'Comece com 3x por semana em dias alternados para dar tempo de recuperação.'],
+                avancado: ['Para quebrar platôs, experimente técnicas avançadas: drop sets, rest-pause, ou treine até a falha muscular.', 'Periodização é essencial. Alterne entre fases de volume, intensidade e força.']
+            },
+            nutrition: {
+                dieta: ['Para ganho de massa: superávit de 300-500 kcal. Para perda de gordura: déficit de 300-500 kcal.', 'Distribua suas macros: Proteína 25-30%, Carbos 40-50%, Gorduras 20-30%.'],
+                proteina: ['Consuma proteína a cada 3-4 horas para manter síntese proteica elevada. Boas fontes: frango, peixe, ovos, whey.', 'Pós-treino: 20-40g de proteína + carboidratos de rápida absorção.'],
+                carboidrato: ['Carbos complexos (batata doce, arroz integral, aveia) fornecem energia sustentada para treinos intensos.', 'Consuma a maior parte dos carbos ao redor do treino (pré e pós) para melhor performance e recuperação.'],
+                gordura: ['Gorduras saudáveis (abacate, azeite, castanhas) são essenciais para produção hormonal e saúde.', 'Não elimine gorduras da dieta! Elas ajudam na absorção de vitaminas e saciedade.'],
+                suplemento: ['Suplementos essenciais: Whey protein, creatina, multivitamínico. O resto é opcional.', 'Creatina: 5g por dia, todo dia. Aumenta força e volume muscular comprovadamente.'],
+                hidratacao: ['Beba pelo menos 35ml de água por kg de peso corporal. Hidratação melhora performance e recuperação!', 'Durante o treino, beba 150-250ml a cada 15-20 minutos.']
+            }
+        };
+
+        // Improved AI Response function
+        function getAIResponse(userMessage, aiType) {
+            const message = userMessage.toLowerCase();
+            const knowledge = aiKnowledge[aiType];
+            
+            // Find relevant keywords in user message
+            for (let keyword in knowledge) {
+                if (message.includes(keyword)) {
+                    const responses = knowledge[keyword];
+                    return responses[Math.floor(Math.random() * responses.length)];
+                }
+            }
+            
+            // Context-aware responses
+            if (aiType === 'workout') {
+                if (message.includes('como') || message.includes('qual') || message.includes('?')) {
+                    return `Ótima pergunta! Para ${userData.goal}, recomendo focar em exercícios compostos e manter consistência. Seu nível ${userData.level} permite progressão gradual. O que especificamente você gostaria de saber?`;
+                }
+                if (message.includes('cansado') || message.includes('dor')) {
+                    return 'Descanso é fundamental! Se estiver com dor muscular intensa, dê mais tempo de recuperação. Overtraining prejudica seus ganhos. Considere um dia de descanso ativo com alongamento.';
+                }
+                return `Com base no seu objetivo de ${userData.goal} e nível ${userData.level}, posso te ajudar com dicas de treino, técnicas de execução, divisão de treino, progressão de carga e muito mais! Como posso ajudar especificamente?`;
+            } else {
+                if (message.includes('quantos') || message.includes('quanto')) {
+                    const tdee = calculateTDEE();
+                    return `Com base nos seus dados (${userData.weight}kg, ${userData.height}cm, ${userData.age} anos), seu gasto calórico diário estimado é ${tdee} kcal. Para ${userData.goal}, ajuste conforme necessário!`;
+                }
+                if (message.includes('o que comer') || message.includes('refeição')) {
+                    return `Para ${userData.goal}, recomendo refeições balanceadas: proteína magra + carboidrato complexo + vegetais + gordura saudável. Exemplo: Frango grelhado + Arroz integral + Brócolis + Azeite. Quer sugestões específicas?`;
+                }
+                return `Considerando suas restrições alimentares (${userData.restrictions.join(', ') || 'nenhuma'}) e objetivo de ${userData.goal}, posso te ajudar com dietas, calorias, macros, suplementação e receitas! O que você gostaria de saber?`;
+            }
+        }
+
+        // Calculate TDEE (Total Daily Energy Expenditure)
+        function calculateTDEE() {
+            const weight = userData.weight;
+            const height = userData.height;
+            const age = userData.age;
+            const gender = userData.gender;
+            
+            // Mifflin-St Jeor Equation
+            let bmr;
+            if (gender === 'masculino') {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+            
+            // Activity multiplier based on workout frequency
+            const activityMultipliers = {
+                2: 1.375,  // Lightly active
+                3: 1.55,   // Moderately active
+                4: 1.55,
+                5: 1.725,  // Very active
+                6: 1.725
+            };
+            
+            const tdee = Math.round(bmr * (activityMultipliers[userData.frequency] || 1.55));
+            return tdee;
+        }
+
+        // Toggle weight goal field
+        function toggleWeightGoal() {
+            const goal = document.getElementById('userGoal').value;
+            const weightGoalGroup = document.getElementById('weightGoalGroup');
+            const weightGoalLabel = document.getElementById('weightGoalLabel');
+            
+            if (goal === 'cutting') {
+                weightGoalGroup.classList.remove('hidden');
+                weightGoalLabel.textContent = 'Quanto deseja perder? (kg)';
+                userData.weightGoalType = 'lose';
+            } else if (goal === 'bulking') {
+                weightGoalGroup.classList.remove('hidden');
+                weightGoalLabel.textContent = 'Quanto deseja ganhar? (kg)';
+                userData.weightGoalType = 'gain';
+            } else {
+                weightGoalGroup.classList.add('hidden');
+                userData.weightGoalType = '';
+            }
+        }
+
+        // Checkbox toggle
+        function toggleCheckbox(element, value, type) {
+            element.classList.toggle('selected');
+            
+            if (type === 'restrictions') {
+                const index = selectedRestrictions.indexOf(value);
+                if (index > -1) {
+                    selectedRestrictions.splice(index, 1);
+                } else {
+                    selectedRestrictions.push(value);
+                }
+            } else {
+                const index = selectedEquipment.indexOf(value);
+                if (index > -1) {
+                    selectedEquipment.splice(index, 1);
+                } else {
+                    selectedEquipment.push(value);
+                }
+            }
+        }
+
+        // Complete registration
+        function completeRegistration() {
+            const name = document.getElementById('userName').value;
+            const age = document.getElementById('userAge').value;
+            const gender = document.getElementById('userGender').value;
+            const height = document.getElementById('userHeight').value;
+            const weight = document.getElementById('userWeight').value;
+            const goal = document.getElementById('userGoal').value;
+            const level = document.getElementById('userLevel').value;
+            const frequency = document.getElementById('userFrequency').value;
+            const language = document.getElementById('userLanguage').value;
+            const weightGoalAmount = document.getElementById('weightGoalAmount').value;
+
+            if (!name || !age || !gender || !height || !weight || !goal || !level || !frequency) {
+                alert('Por favor, preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            userData = {
+                name: name,
+                age: parseInt(age),
+                gender: gender,
+                height: parseInt(height),
+                weight: parseFloat(weight),
+                weightGoal: weightGoalAmount ? parseFloat(weightGoalAmount) : 0,
+                weightGoalType: userData.weightGoalType,
+                goal: goal,
+                level: level,
+                frequency: parseInt(frequency),
+                restrictions: selectedRestrictions,
+                equipment: selectedEquipment,
+                language: language,
+                streak: 0,
+                workoutsCompleted: 0,
+                calories: 0,
+                achievements: ['first_login'],
+                userLevel: 1,
+                xp: 10,
+                completedExercises: []
+            };
+
+            localStorage.setItem('fitaiUserData', JSON.stringify(userData));
+            
+            showApp();
+            updateDashboard();
+            renderExercises();
+            initializeAIChat();
+        }
+
+        // Show main app
+        function showApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainHeader').classList.remove('hidden');
+            document.getElementById('mainNav').classList.remove('hidden');
+            switchPage('dashboard');
+        }
+
+        // Calculate level from XP
+        function calculateLevel(xp) {
+            return Math.min(10, Math.floor(xp / 100) + 1);
+        }
+
+        // Add XP and check level up
+        function addXP(amount) {
+            userData.xp += amount;
+            const newLevel = calculateLevel(userData.xp);
+            
+            if (newLevel > userData.userLevel) {
+                userData.userLevel = newLevel;
+                alert(`🎉 Parabéns! Você subiu para o Nível ${newLevel}!`);
+            }
+            
+            localStorage.setItem('fitaiUserData', JSON.stringify(userData));
+            updateDashboard();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            document.getElementById('displayUserName').textContent = userData.name;
+            document.getElementById('userLevelNumber').textContent = userData.userLevel;
+            
+            const xpForCurrentLevel = (userData.userLevel - 1) * 100;
+            const xpForNextLevel = userData.userLevel * 100;
+            const xpProgress = userData.xp - xpForCurrentLevel;
+            const xpNeeded = xpForNextLevel - xpForCurrentLevel;
+            const xpPercentage = (xpProgress / xpNeeded) * 100;
+            
+            document.getElementById('xpFill').style.width = xpPercentage + '%';
+            document.getElementById('currentXP').textContent = xpProgress;
+            document.getElementById('nextLevelXP').textContent = xpNeeded;
+            
+            document.getElementById('workoutsCompleted').textContent = userData.workoutsCompleted;
+            document.getElementById('workoutsGoal').textContent = userData.frequency;
+            document.getElementById('caloriesConsumed').textContent = userData.calories;
+            
+            const tdee = calculateTDEE();
+            document.getElementById('caloriesGoal').textContent = tdee;
+            
+            const bmi = (userData.weight / ((userData.height/100) ** 2)).toFixed(1);
+            document.getElementById('currentWeight').textContent = userData.weight;
+            document.getElementById('currentBMI').textContent = bmi;
+
+            const goalNames = {
+                bulking: 'Ganho de Massa',
+                cutting: 'Perda de Gordura',
+                manutencao: 'Manutenção',
+                condicionamento: 'Condicionamento',
+                forca: 'Ganho de Força',
+                definicao: 'Definição Muscular',
+                saude: 'Saúde e Bem-Estar',
+                flexibilidade: 'Flexibilidade'
+            };
+            document.getElementById('goalDisplay').textContent = goalNames[userData.goal] || '-';
+            
+            const levelNames = {
+                iniciante: 'Iniciante',
+                intermediario: 'Intermediário',
+                avancado: 'Avançado'
+            };
+            document.getElementById('levelDisplay').textContent = levelNames[userData.level] || '-';
+
+            const progress = Math.round((userData.workoutsCompleted / userData.frequency) * 100);
+            document.getElementById('workoutProgress').textContent = progress + '% completo';
+
+            document.getElementById('profileName').textContent = userData.name;
+            document.getElementById('profileDetails').textContent = `${userData.age} anos • ${goalNames[userData.goal]}`;
+            document.getElementById('currentLanguageDisplay').textContent = languageNames[userData.language];
+
+            // Update weight goal progress
+            if (userData.weightGoal > 0) {
+                document.getElementById('weightGoalProgress').classList.remove('hidden');
+                document.getElementById('initialWeight').textContent = userData.weight;
+                
+                if (userData.weightGoalType === 'lose') {
+                    const targetWeight = userData.weight - userData.weightGoal;
+                    document.getElementById('targetWeight').textContent = targetWeight.toFixed(1);
+                    document.getElementById('remainingWeight').textContent = userData.weightGoal.toFixed(1);
+                } else {
+                    const targetWeight = userData.weight + userData.weightGoal;
+                    document.getElementById('targetWeight').textContent = targetWeight.toFixed(1);
+                    document.getElementById('remainingWeight').textContent = userData.weightGoal.toFixed(1);
+                }
+                
+                document.getElementById('weightProgressBar').style.width = '0%';
+            }
+
+            updateAchievements();
+        }
+
+        // Update achievements
+        function updateAchievements() {
+            const achievementsContainer = document.getElementById('achievementsList');
+            const allAchievements = [
+                { id: 'first_login', icon: '🎉', title: 'Bem-vindo!', description: 'Você criou sua conta no FitAI', unlocked: userData.achievements.includes('first_login'), xp: 10 },
+                { id: 'first_workout', icon: '💪', title: 'Primeiro Treino', description: 'Complete seu primeiro treino', unlocked: userData.workoutsCompleted >= 1, xp: 20 },
+                { id: 'streak_7', icon: '🔥', title: '7 Dias de Sequência', description: 'Treine por 7 dias seguidos', unlocked: userData.streak >= 7, xp: 50 },
+                { id: 'workouts_10', icon: '🏅', title: '10 Treinos Completos', description: 'Complete 10 treinos', unlocked: userData.workoutsCompleted >= 10, xp: 100 },
+                { id: 'level_5', icon: '⭐', title: 'Nível 5 Alcançado', description: 'Chegue ao nível 5', unlocked: userData.userLevel >= 5, xp: 150 },
+                { id: 'level_10', icon: '👑', title: 'Mestre FitAI', description: 'Alcance o nível máximo 10', unlocked: userData.userLevel >= 10, xp: 300 },
+            ];
+
+            // Check and unlock new achievements
+            allAchievements.forEach(achievement => {
+                if (achievement.unlocked && !userData.achievements.includes(achievement.id)) {
+                    userData.achievements.push(achievement.id);
+                    addXP(achievement.xp);
+                    alert(`🏆 Nova conquista desbloqueada: ${achievement.title}! (+${achievement.xp} XP)`);
+                }
+            });
+
+            localStorage.setItem('fitaiUserData', JSON.stringify(userData));
+
+            achievementsContainer.innerHTML = allAchievements.map(achievement => `
+                <div class="achievement-card ${!achievement.unlocked ? 'locked' : ''}">
+                    <div class="achievement-icon">${achievement.unlocked ? achievement.icon : '🔒'}</div>
+                    <div>
+                        <h3>${achievement.title}</h3>
+                        <p style="color: #a0aec0; font-size: 14px;">${achievement.description}</p>
+                        ${achievement.unlocked ? `<p style="color: #00ff88; font-size: 12px; margin-top: 5px;">+${achievement.xp} XP</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render exercises
+        function renderExercises() {
+            const categories = ['chest', 'back', 'legs', 'arms', 'shoulders'];
+            const containers = ['chestExercises', 'backExercises', 'legExercises', 'armExercises', 'shoulderExercises'];
+            
+            categories.forEach((category, index) => {
+                const container = document.getElementById(containers[index]);
+                if (!container) return;
+                
+                container.innerHTML = exercises[category].map(exercise => {
+                    const isCompleted = userData.completedExercises.includes(exercise.id);
+                    return `
+                        <div class="workout-card ${isCompleted ? 'completed' : ''}" onclick="showExercise('${exercise.id}')">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 700;">${exercise.name}</div>
+                                    <div style="margin-top: 10px; color: #a0aec0; font-size: 14px;">${exercise.volume}</div>
+                                </div>
+                                ${exercise.badge ? `<div class="badge">${exercise.badge}</div>` : ''}
+                                ${isCompleted ? '<div class="completed-badge">✅ Completo</div>' : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        // Navigation
+        function switchPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.getElementById(pageName).classList.add('active');
+            
+            // Update active nav item
+            const navItems = document.querySelectorAll('.nav-item');
+            const pageOrder = ['dashboard', 'workouts', 'nutrition', 'progress', 'ai'];
+            const pageIndex = pageOrder.indexOf(pageName);
+            if (pageIndex >= 0 && navItems[pageIndex]) {
+                navItems[pageIndex].classList.add('active');
+            }
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId + 'Modal').classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // Show exercise modal
+        function showExercise(exerciseId) {
+            let exercise = null;
+            
+            // Find exercise in all categories
+            for (let category in exercises) {
+                exercise = exercises[category].find(ex => ex.id === exerciseId);
+                if (exercise) break;
+            }
+            
+            if (!exercise) return;
+            
+            currentExerciseId = exerciseId;
+            
+            document.getElementById('exerciseTitle').textContent = exercise.name;
+            document.getElementById('exerciseIcon').textContent = exercise.icon;
+            document.getElementById('exerciseExecution').textContent = exercise.execution;
+            document.getElementById('exerciseVolume').textContent = exercise.volume;
+            document.getElementById('exerciseMuscles').textContent = exercise.muscles;
+            
+            // Update button text based on completion status
+            const isCompleted = userData.completedExercises.includes(exerciseId);
+            document.getElementById('completeExerciseBtn').textContent = isCompleted ? '✅ Já Realizado' : '✅ Marcar como Realizado';
+            
+            showModal('exercise');
+        }
+
+        // Mark exercise complete
+        function markExerciseComplete() {
+            if (!currentExerciseId) return;
+            
+            if (!userData.completedExercises.includes(currentExerciseId)) {
+                userData.completedExercises.push(currentExerciseId);
+                userData.workoutsCompleted++;
+                addXP(15);
+                
+                localStorage.setItem('fitaiUserData', JSON.stringify(userData));
+                renderExercises();
+                updateDashboard();
+                
+                alert('✅ Exercício marcado como completo! +15 XP');
+                closeModal('exerciseModal');
+            } else {
+                alert('Este exercício já foi marcado como completo!');
+            }
+        }
+
+        // Change language
+        function changeLanguage(langCode, element) {
+            document.querySelectorAll('.language-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+            userData.language = langCode;
+        }
+
+        function saveLanguageAndClose() {
+            localStorage.setItem('fitaiUserData', JSON.stringify(userData));
+            document.getElementById('currentLanguageDisplay').textContent = languageNames[userData.language];
+            closeModal('languageModal');
+            alert('✅ Idioma atualizado com sucesso!');
+        }
+
+        // Food recognition
+        function recognizeFood(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const foods = [
+                    { name: 'Peito de Frango Grelhado', calories: 165, protein: 31, carbs: 0, fats: 3.6, portion: '100g' },
+                    { name: 'Arroz Integral', calories: 216, protein: 5, carbs: 45, fats: 1.8, portion: '150g' },
+                    { name: 'Batata Doce', calories: 86, protein: 1.6, carbs: 20, fats: 0.1, portion: '100g' },
+                    { name: 'Ovo Cozido', calories: 155, protein: 13, carbs: 1, fats: 11, portion: '2 unidades' },
+                    { name: 'Banana', calories: 105, protein: 1.3, carbs: 27, fats: 0.4, portion: '1 unidade' },
+                ];
+
+                const food = foods[Math.floor(Math.random() * foods.length)];
+
+                document.getElementById('foodResult').innerHTML = `
+                    <img src="${e.target.result}" style="width: 100%; height: 200px; border-radius: 15px; object-fit: cover; margin-bottom: 15px;" alt="Food">
+                    <h3 style="margin-bottom: 10px;">✅ ${food.name}</h3>
+                    <p style="color: #a0aec0; margin-bottom: 15px;">Porção estimada: ${food.portion}</p>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;">
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 12px; color: #a0aec0; margin-bottom: 5px;">Calorias</div>
+                            <div style="font-size: 18px; font-weight: 700; color: #00ff88;">${food.calories}</div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 12px; color: #a0aec0; margin-bottom: 5px;">Proteínas</div>
+                            <div style="font-size: 18px; font-weight: 700; color: #00ff88;">${food.protein}g</div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 12px; color: #a0aec0; margin-bottom: 5px;">Carboidratos</div>
+                            <div style="font-size: 18px; font-weight: 700; color: #00ff88;">${food.carbs}g</div>
+                        </div>
+                        <div style="background: rgba(255, 255, 255, 0.05); padding: 12px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 12px; color: #a0aec0; margin-bottom: 5px;">Gorduras</div>
+                            <div style="font-size: 18px; font-weight: 700; color: #00ff88;">${food.fats}g</div>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addFood(${food.calories})">➕ Adicionar às Refeições</button>
+                `;
+                document.getElementById('foodResult').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Add food
+        function addFood(calories) {
+            userData.calories += calories;
+            localStorage.setItem('fitaiUserData', JSON.stringify(userData));
+            document.getElementById('caloriesConsumed').textContent = userData.calories;
+            document.getElementById('foodResult').classList.add('hidden');
+            alert('✅ Refeição adicionada com sucesso!');
+        }
+
+        // Initialize AI Chat
+        function initializeAIChat() {
+            const chatMessages = document.getElementById('chatMessages');
+            const greetingMessages = {
+                workout: 'Olá! Sou sua IA especializada em treinos. Posso ajudar com exercícios, técnicas, divisão de treino, progressão e muito mais! Como posso te ajudar hoje? 💪',
+                nutrition: 'Olá! Sou sua IA especializada em nutrição. Posso ajudar com dietas, calorias, macros, suplementação e receitas saudáveis! O que você gostaria de saber? 🥗'
+            };
+            
+            const greeting = greetingMessages[currentAI];
+            chatMessages.innerHTML = `
+                <div class="message ai">
+                    <div>${greeting}</div>
+                    <div class="message-time">Agora</div>
+                </div>
+            `;
+        }
+
+        // Switch AI
+        function switchAI(aiType) {
+            currentAI = aiType;
+            document.querySelectorAll('.ai-tab').forEach(tab => tab.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            initializeAIChat();
+        }
+
+        // Send message with improved AI
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chatMessages');
+            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+            chatMessages.innerHTML += `
+                <div class="message user">
+                    <div>${message}</div>
+                    <div class="message-time">${time}</div>
+                </div>
+            `;
+            
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Get AI response
+            setTimeout(() => {
+                const aiResponse = getAIResponse(message, currentAI);
+                
+                chatMessages.innerHTML += `
+                    <div class="message ai">
+                        <div>${aiResponse}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                `;
+                
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Tem certeza que deseja sair da sua conta?')) {
+                localStorage.removeItem('fitaiUserData');
+                location.reload();
+            }
+        }
+
+        // Check if user is logged in
+        window.onload = function() {
+            const savedData = localStorage.getItem('fitaiUserData');
+            if (savedData) {
+                userData = JSON.parse(savedData);
+                showApp();
+                updateDashboard();
+                renderExercises();
+                initializeAIChat();
+            }
+        };
+
+        // Enter key to send message
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
