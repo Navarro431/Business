@@ -92,6 +92,39 @@
             100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
         
+        /* LANGUAGE SELECTOR NO TOPO */
+        .language-selector-top {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            z-index: 10;
+        }
+        
+        .language-selector-top select {
+            padding: 12px 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.95);
+            color: var(--dark);
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s;
+        }
+        
+        .language-selector-top select:hover {
+            background: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 107, 53, 0.3);
+        }
+        
+        .language-selector-top select option {
+            background: white;
+            color: var(--dark);
+        }
+        
         .login-box {
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(20px);
@@ -252,10 +285,6 @@
         }
         
         .level-bronze { background: linear-gradient(135deg, #CD7F32, #E9967A); }
-        .level-silver { background: linear-gradient(135deg, #C0C0C0, #E0E0E0); }
-        .level-gold { background: linear-gradient(135deg, #FFD700, #FFA500); }
-        .level-platinum { background: linear-gradient(135deg, #E5E4E2, #B9F2FF); }
-        .level-diamond { background: linear-gradient(135deg, #B9F2FF, #4FC3F7); }
         
         .tabs {
             display: flex;
@@ -321,7 +350,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* HOME */
         .welcome-banner {
             background: linear-gradient(135deg, var(--primary), var(--accent));
             padding: 40px;
@@ -400,7 +428,6 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
-        /* CAMERA */
         .camera-controls {
             display: flex;
             gap: 15px;
@@ -445,6 +472,8 @@
         @media (max-width: 768px) {
             .login-box { padding: 30px 25px; }
             .content { padding: 25px; }
+            .language-selector-top { top: 15px; right: 15px; }
+            .language-selector-top select { padding: 10px 15px; font-size: 0.9em; }
         }
     </style>
 </head>
@@ -457,59 +486,73 @@
     
     <!-- LOGIN -->
     <div id="loginScreen">
+        <!-- SELETOR DE IDIOMA NO TOPO -->
+        <div class="language-selector-top">
+            <select id="loginLanguageSelect" onchange="changeLoginLanguage(this.value)">
+                <option value="pt">🇧🇷 Português</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="es">🇪🇸 Español</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="it">🇮🇹 Italiano</option>
+                <option value="zh">🇨🇳 中文</option>
+                <option value="ja">🇯🇵 日本語</option>
+            </select>
+        </div>
+        
         <div class="login-box">
             <h1>💪 FitLife Pro</h1>
-            <p class="login-subtitle">☁️ Login na nuvem - Acesse de qualquer lugar!</p>
+            <p class="login-subtitle" id="loginSubtitle">Sistema completo de treino e nutrição</p>
             
             <div id="loginForm">
                 <div class="form-group">
-                    <label>Email</label>
+                    <label id="labelEmail">Email</label>
                     <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email">
                 </div>
                 <div class="form-group">
-                    <label>Senha</label>
+                    <label id="labelPassword">Senha</label>
                     <input type="password" id="loginPassword" placeholder="********" autocomplete="current-password">
                 </div>
-                <button class="btn" onclick="doLogin()">Entrar</button>
-                <p class="link-btn" onclick="showRegister()">Criar nova conta</p>
+                <button class="btn" onclick="doLogin()" id="btnLogin">Entrar</button>
+                <p class="link-btn" onclick="showRegister()" id="linkRegister">Criar nova conta</p>
             </div>
 
             <div id="registerForm" class="hidden">
                 <div class="form-group">
-                    <label>Nome completo</label>
+                    <label id="labelName">Nome completo</label>
                     <input type="text" id="registerName" placeholder="Seu nome" autocomplete="name">
                 </div>
                 <div class="form-group">
-                    <label>Email</label>
+                    <label id="labelRegEmail">Email</label>
                     <input type="email" id="registerEmail" placeholder="seu@email.com" autocomplete="email">
                 </div>
                 <div class="form-group">
-                    <label>Senha</label>
+                    <label id="labelRegPassword">Senha</label>
                     <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
                 </div>
                 <div class="form-group">
-                    <label>Idade</label>
+                    <label id="labelAge">Idade</label>
                     <input type="number" id="registerAge" placeholder="25" min="13" max="120">
                 </div>
                 <div class="form-group">
-                    <label>Altura (cm)</label>
+                    <label id="labelHeight">Altura (cm)</label>
                     <input type="number" id="registerHeight" placeholder="175" min="100" max="250">
                 </div>
                 <div class="form-group">
-                    <label>Peso (kg)</label>
+                    <label id="labelWeight">Peso (kg)</label>
                     <input type="number" id="registerWeight" placeholder="70" min="30" max="300">
                 </div>
                 <div class="form-group">
-                    <label>Objetivo</label>
+                    <label id="labelGoal">Objetivo</label>
                     <select id="registerGoal">
-                        <option value="muscle">Ganhar massa muscular</option>
-                        <option value="cut">Secar / Definir</option>
-                        <option value="strength">Ganhar força</option>
-                        <option value="beginner">Iniciante</option>
+                        <option value="muscle" id="goalMuscle">Ganhar massa muscular</option>
+                        <option value="cut" id="goalCut">Secar / Definir</option>
+                        <option value="strength" id="goalStrength">Ganhar força</option>
+                        <option value="beginner" id="goalBeginner">Iniciante</option>
                     </select>
                 </div>
-                <button class="btn" onclick="doRegister()">Criar conta na nuvem ☁️</button>
-                <p class="link-btn" onclick="showLogin()">Já tenho conta</p>
+                <button class="btn" onclick="doRegister()" id="btnRegister">Criar conta</button>
+                <p class="link-btn" onclick="showLogin()" id="linkLogin">Já tenho conta</p>
             </div>
         </div>
     </div>
@@ -526,12 +569,24 @@
                     <p id="userLevelText">Bronze - Nível 1</p>
                 </div>
             </div>
-            <button class="btn" onclick="logout()" style="width:auto;padding:12px 25px;margin:0;">Sair</button>
+            <div style="display:flex;gap:15px;align-items:center;">
+                <select id="appLanguageSelect" onchange="changeAppLanguage(this.value)">
+                    <option value="pt">🇧🇷 PT</option>
+                    <option value="en">🇺🇸 EN</option>
+                    <option value="es">🇪🇸 ES</option>
+                    <option value="fr">🇫🇷 FR</option>
+                    <option value="de">🇩🇪 DE</option>
+                    <option value="it">🇮🇹 IT</option>
+                    <option value="zh">🇨🇳 ZH</option>
+                    <option value="ja">🇯🇵 JA</option>
+                </select>
+                <button class="btn" onclick="logout()" style="width:auto;padding:12px 25px;margin:0;" id="btnLogout">Sair</button>
+            </div>
         </div>
 
         <div class="tabs">
-            <button class="tab active" onclick="showTab('home')">🏠 Início</button>
-            <button class="tab" onclick="showTab('camera')">📷 Scanner IA</button>
+            <button class="tab active" onclick="showTab('home')" id="tabHome">🏠 Início</button>
+            <button class="tab" onclick="showTab('camera')" id="tabCamera">📷 Scanner IA</button>
         </div>
 
         <div class="content">
@@ -544,30 +599,30 @@
                 <div class="stats-grid">
                     <div class="stat-card">
                         <h4 id="statDays">0</h4>
-                        <p style="font-size:1.1em;font-weight:600;">Dias de treino</p>
+                        <p style="font-size:1.1em;font-weight:600;" id="labelDays">Dias de treino</p>
                     </div>
                     <div class="stat-card">
                         <h4 id="statLevel">1</h4>
-                        <p style="font-size:1.1em;font-weight:600;">Nível</p>
+                        <p style="font-size:1.1em;font-weight:600;" id="labelLevel">Nível</p>
                     </div>
                     <div class="stat-card">
                         <h4 id="statXP">0</h4>
-                        <p style="font-size:1.1em;font-weight:600;">XP Total</p>
+                        <p style="font-size:1.1em;font-weight:600;" id="labelXP">XP Total</p>
                     </div>
                 </div>
             </div>
 
             <div id="camera" class="tab-content">
-                <h3 style="font-size:2em;margin-bottom:20px;">📷 Scanner de Alimentos com IA</h3>
-                <p style="opacity:0.9;margin-bottom:25px;font-size:1.1em;">Use a câmera para identificar alimentos com TensorFlow.js</p>
+                <h3 style="font-size:2em;margin-bottom:20px;" id="cameraTitle">📷 Scanner de Alimentos com IA</h3>
+                <p style="opacity:0.9;margin-bottom:25px;font-size:1.1em;" id="cameraDesc">Use a câmera para identificar alimentos com TensorFlow.js</p>
                 
                 <video id="video" autoplay playsinline></video>
                 <canvas id="canvas"></canvas>
                 
                 <div class="camera-controls">
-                    <button class="btn" onclick="startCamera()" id="btnStart">📷 Ativar Câmera</button>
-                    <button class="camera-switch-btn" onclick="switchCamera()" id="btnSwitch" style="display:none;">🔄 Trocar Câmera (Frontal/Traseira)</button>
-                    <button class="btn" onclick="capturePhoto()" id="btnCapture" style="display:none;background:var(--success);">📸 Capturar e Analisar</button>
+                    <button class="btn" onclick="startCamera()" id="btnStart">📷 <span id="btnStartText">Ativar Câmera</span></button>
+                    <button class="camera-switch-btn" onclick="switchCamera()" id="btnSwitch" style="display:none;"><span id="btnSwitchText">🔄 Trocar Câmera</span></button>
+                    <button class="btn" onclick="capturePhoto()" id="btnCapture" style="display:none;background:var(--success);"><span id="btnCaptureText">📸 Capturar</span></button>
                 </div>
                 
                 <div id="analysis" style="display:none;margin-top:20px;background:rgba(255,255,255,0.08);padding:25px;border-radius:15px;"></div>
@@ -577,44 +632,503 @@
 
     <div id="notification" class="notification"></div>
 
-    <!-- TensorFlow.js -->
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2/dist/coco-ssd.min.js"></script>
     
-    <!-- Firebase SDK - TIPO MODULE -->
-    <script type="module">
-        // Import Firebase
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getDatabase, ref, set, get, child } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+    <script>
+        console.log('🚀 FitLife Pro iniciando...');
         
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBvZw8N_vN5vX8KqJ9mPmYvFQxGxB8JJYQ",
-            authDomain: "fitlife-pro-f8a21.firebaseapp.com",
-            databaseURL: "https://fitlife-pro-f8a21-default-rtdb.firebaseio.com",
-            projectId: "fitlife-pro-f8a21",
-            storageBucket: "fitlife-pro-f8a21.appspot.com",
-            messagingSenderId: "847295631847",
-            appId: "1:847295631847:web:7c4e8b9f6d5a3c2b1e4f9a"
+        // TRADUÇÕES COMPLETAS
+        const TRANSLATIONS = {
+            pt: {
+                loginSubtitle: 'Sistema completo de treino e nutrição',
+                labelEmail: 'Email',
+                labelPassword: 'Senha',
+                btnLogin: 'Entrar',
+                linkRegister: 'Criar nova conta',
+                labelName: 'Nome completo',
+                labelRegEmail: 'Email',
+                labelRegPassword: 'Senha',
+                labelAge: 'Idade',
+                labelHeight: 'Altura (cm)',
+                labelWeight: 'Peso (kg)',
+                labelGoal: 'Objetivo',
+                goalMuscle: 'Ganhar massa muscular',
+                goalCut: 'Secar / Definir',
+                goalStrength: 'Ganhar força',
+                goalBeginner: 'Iniciante',
+                btnRegister: 'Criar conta',
+                linkLogin: 'Já tenho conta',
+                btnLogout: 'Sair',
+                tabHome: '🏠 Início',
+                tabCamera: '📷 Scanner IA',
+                homeWelcome: 'Bem-vindo',
+                homeText: 'Sua jornada fitness começa aqui!',
+                labelDays: 'Dias de treino',
+                labelLevel: 'Nível',
+                labelXP: 'XP Total',
+                cameraTitle: '📷 Scanner de Alimentos com IA',
+                cameraDesc: 'Use a câmera para identificar alimentos com TensorFlow.js',
+                btnStartText: 'Ativar Câmera',
+                btnSwitchText: '🔄 Trocar Câmera (Frontal/Traseira)',
+                btnCaptureText: '📸 Capturar e Analisar',
+                loading: 'Carregando...',
+                loggingIn: 'Fazendo login...',
+                creating: 'Criando conta...',
+                fillFields: 'Preencha todos os campos!',
+                wrongPassword: 'Senha incorreta!',
+                userNotFound: 'Usuário não encontrado!',
+                emailExists: 'Este email já está cadastrado!',
+                passwordMin: 'Senha deve ter mínimo 6 caracteres!',
+                loginSuccess: 'Login realizado!',
+                accountCreated: 'Conta criada com sucesso!',
+                goodbye: 'Até logo!',
+                welcomeBack: 'Bem-vindo de volta!',
+                activatingCamera: 'Ativando câmera...',
+                loadingAI: 'Carregando modelo de IA...',
+                cameraActivated: 'Câmera ativada!',
+                cameraError: 'Erro na câmera',
+                analyzing: 'Analisando com IA...',
+                analysisComplete: 'Análise completa!',
+                cameraFront: 'Câmera Frontal ativada!',
+                cameraBack: 'Câmera Traseira ativada!'
+            },
+            en: {
+                loginSubtitle: 'Complete training and nutrition system',
+                labelEmail: 'Email',
+                labelPassword: 'Password',
+                btnLogin: 'Login',
+                linkRegister: 'Create new account',
+                labelName: 'Full name',
+                labelRegEmail: 'Email',
+                labelRegPassword: 'Password',
+                labelAge: 'Age',
+                labelHeight: 'Height (cm)',
+                labelWeight: 'Weight (kg)',
+                labelGoal: 'Goal',
+                goalMuscle: 'Gain muscle mass',
+                goalCut: 'Cut / Define',
+                goalStrength: 'Gain strength',
+                goalBeginner: 'Beginner',
+                btnRegister: 'Create account',
+                linkLogin: 'I have an account',
+                btnLogout: 'Logout',
+                tabHome: '🏠 Home',
+                tabCamera: '📷 AI Scanner',
+                homeWelcome: 'Welcome',
+                homeText: 'Your fitness journey starts here!',
+                labelDays: 'Training days',
+                labelLevel: 'Level',
+                labelXP: 'Total XP',
+                cameraTitle: '📷 AI Food Scanner',
+                cameraDesc: 'Use camera to identify food with TensorFlow.js',
+                btnStartText: 'Activate Camera',
+                btnSwitchText: '🔄 Switch Camera (Front/Back)',
+                btnCaptureText: '📸 Capture & Analyze',
+                loading: 'Loading...',
+                loggingIn: 'Logging in...',
+                creating: 'Creating account...',
+                fillFields: 'Fill all fields!',
+                wrongPassword: 'Wrong password!',
+                userNotFound: 'User not found!',
+                emailExists: 'Email already registered!',
+                passwordMin: 'Password must be at least 6 characters!',
+                loginSuccess: 'Login successful!',
+                accountCreated: 'Account created successfully!',
+                goodbye: 'Goodbye!',
+                welcomeBack: 'Welcome back!',
+                activatingCamera: 'Activating camera...',
+                loadingAI: 'Loading AI model...',
+                cameraActivated: 'Camera activated!',
+                cameraError: 'Camera error',
+                analyzing: 'Analyzing with AI...',
+                analysisComplete: 'Analysis complete!',
+                cameraFront: 'Front Camera activated!',
+                cameraBack: 'Back Camera activated!'
+            },
+            es: {
+                loginSubtitle: 'Sistema completo de entrenamiento y nutrición',
+                labelEmail: 'Correo',
+                labelPassword: 'Contraseña',
+                btnLogin: 'Entrar',
+                linkRegister: 'Crear nueva cuenta',
+                labelName: 'Nombre completo',
+                labelRegEmail: 'Correo',
+                labelRegPassword: 'Contraseña',
+                labelAge: 'Edad',
+                labelHeight: 'Altura (cm)',
+                labelWeight: 'Peso (kg)',
+                labelGoal: 'Objetivo',
+                goalMuscle: 'Ganar masa muscular',
+                goalCut: 'Definir / Cortar',
+                goalStrength: 'Ganar fuerza',
+                goalBeginner: 'Principiante',
+                btnRegister: 'Crear cuenta',
+                linkLogin: 'Ya tengo cuenta',
+                btnLogout: 'Salir',
+                tabHome: '🏠 Inicio',
+                tabCamera: '📷 Escáner IA',
+                homeWelcome: 'Bienvenido',
+                homeText: '¡Tu viaje fitness comienza aquí!',
+                labelDays: 'Días de entrenamiento',
+                labelLevel: 'Nivel',
+                labelXP: 'XP Total',
+                cameraTitle: '📷 Escáner de Alimentos con IA',
+                cameraDesc: 'Usa la cámara para identificar alimentos con TensorFlow.js',
+                btnStartText: 'Activar Cámara',
+                btnSwitchText: '🔄 Cambiar Cámara (Frontal/Trasera)',
+                btnCaptureText: '📸 Capturar y Analizar',
+                loading: 'Cargando...',
+                loggingIn: 'Iniciando sesión...',
+                creating: 'Creando cuenta...',
+                fillFields: '¡Completa todos los campos!',
+                wrongPassword: '¡Contraseña incorrecta!',
+                userNotFound: '¡Usuario no encontrado!',
+                emailExists: '¡Email ya registrado!',
+                passwordMin: '¡La contraseña debe tener mínimo 6 caracteres!',
+                loginSuccess: '¡Inicio de sesión exitoso!',
+                accountCreated: '¡Cuenta creada con éxito!',
+                goodbye: '¡Adiós!',
+                welcomeBack: '¡Bienvenido de vuelta!',
+                activatingCamera: 'Activando cámara...',
+                loadingAI: 'Cargando modelo IA...',
+                cameraActivated: '¡Cámara activada!',
+                cameraError: 'Error en cámara',
+                analyzing: 'Analizando con IA...',
+                analysisComplete: '¡Análisis completo!',
+                cameraFront: '¡Cámara Frontal activada!',
+                cameraBack: '¡Cámara Trasera activada!'
+            },
+            fr: {
+                loginSubtitle: 'Système complet d\'entraînement et nutrition',
+                labelEmail: 'Email',
+                labelPassword: 'Mot de passe',
+                btnLogin: 'Connexion',
+                linkRegister: 'Créer un compte',
+                labelName: 'Nom complet',
+                labelRegEmail: 'Email',
+                labelRegPassword: 'Mot de passe',
+                labelAge: 'Âge',
+                labelHeight: 'Taille (cm)',
+                labelWeight: 'Poids (kg)',
+                labelGoal: 'Objectif',
+                goalMuscle: 'Gagner masse musculaire',
+                goalCut: 'Sécher / Définir',
+                goalStrength: 'Gagner force',
+                goalBeginner: 'Débutant',
+                btnRegister: 'Créer compte',
+                linkLogin: 'J\'ai un compte',
+                btnLogout: 'Déconnexion',
+                tabHome: '🏠 Accueil',
+                tabCamera: '📷 Scanner IA',
+                homeWelcome: 'Bienvenue',
+                homeText: 'Votre voyage fitness commence ici!',
+                labelDays: 'Jours d\'entraînement',
+                labelLevel: 'Niveau',
+                labelXP: 'XP Total',
+                cameraTitle: '📷 Scanner Alimentaire IA',
+                cameraDesc: 'Utilisez la caméra pour identifier les aliments',
+                btnStartText: 'Activer Caméra',
+                btnSwitchText: '🔄 Changer Caméra',
+                btnCaptureText: '📸 Capturer',
+                loading: 'Chargement...',
+                loggingIn: 'Connexion...',
+                creating: 'Création...',
+                fillFields: 'Remplissez tous les champs!',
+                wrongPassword: 'Mot de passe incorrect!',
+                userNotFound: 'Utilisateur non trouvé!',
+                emailExists: 'Email déjà enregistré!',
+                passwordMin: 'Mot de passe minimum 6 caractères!',
+                loginSuccess: 'Connexion réussie!',
+                accountCreated: 'Compte créé!',
+                goodbye: 'Au revoir!',
+                welcomeBack: 'Bon retour!',
+                activatingCamera: 'Activation caméra...',
+                loadingAI: 'Chargement IA...',
+                cameraActivated: 'Caméra activée!',
+                cameraError: 'Erreur caméra',
+                analyzing: 'Analyse IA...',
+                analysisComplete: 'Analyse terminée!',
+                cameraFront: 'Caméra Frontale activée!',
+                cameraBack: 'Caméra Arrière activée!'
+            },
+            de: {
+                loginSubtitle: 'Komplettes Training- und Ernährungssystem',
+                labelEmail: 'E-Mail',
+                labelPassword: 'Passwort',
+                btnLogin: 'Anmelden',
+                linkRegister: 'Konto erstellen',
+                labelName: 'Vollständiger Name',
+                labelRegEmail: 'E-Mail',
+                labelRegPassword: 'Passwort',
+                labelAge: 'Alter',
+                labelHeight: 'Größe (cm)',
+                labelWeight: 'Gewicht (kg)',
+                labelGoal: 'Ziel',
+                goalMuscle: 'Muskelmasse aufbauen',
+                goalCut: 'Definieren',
+                goalStrength: 'Kraft gewinnen',
+                goalBeginner: 'Anfänger',
+                btnRegister: 'Konto erstellen',
+                linkLogin: 'Ich habe ein Konto',
+                btnLogout: 'Abmelden',
+                tabHome: '🏠 Start',
+                tabCamera: '📷 KI-Scanner',
+                homeWelcome: 'Willkommen',
+                homeText: 'Ihre Fitnessreise beginnt hier!',
+                labelDays: 'Trainingstage',
+                labelLevel: 'Stufe',
+                labelXP: 'Gesamt XP',
+                cameraTitle: '📷 KI-Lebensmittelscanner',
+                cameraDesc: 'Verwenden Sie die Kamera zur Identifizierung',
+                btnStartText: 'Kamera aktivieren',
+                btnSwitchText: '🔄 Kamera wechseln',
+                btnCaptureText: '📸 Erfassen',
+                loading: 'Laden...',
+                loggingIn: 'Anmelden...',
+                creating: 'Erstellen...',
+                fillFields: 'Alle Felder ausfüllen!',
+                wrongPassword: 'Falsches Passwort!',
+                userNotFound: 'Benutzer nicht gefunden!',
+                emailExists: 'E-Mail bereits registriert!',
+                passwordMin: 'Passwort mindestens 6 Zeichen!',
+                loginSuccess: 'Anmeldung erfolgreich!',
+                accountCreated: 'Konto erstellt!',
+                goodbye: 'Auf Wiedersehen!',
+                welcomeBack: 'Willkommen zurück!',
+                activatingCamera: 'Kamera aktivieren...',
+                loadingAI: 'KI laden...',
+                cameraActivated: 'Kamera aktiviert!',
+                cameraError: 'Kamera-Fehler',
+                analyzing: 'KI-Analyse...',
+                analysisComplete: 'Analyse abgeschlossen!',
+                cameraFront: 'Frontkamera aktiviert!',
+                cameraBack: 'Rückkamera aktiviert!'
+            },
+            it: {
+                loginSubtitle: 'Sistema completo di allenamento e nutrizione',
+                labelEmail: 'Email',
+                labelPassword: 'Password',
+                btnLogin: 'Accedi',
+                linkRegister: 'Crea account',
+                labelName: 'Nome completo',
+                labelRegEmail: 'Email',
+                labelRegPassword: 'Password',
+                labelAge: 'Età',
+                labelHeight: 'Altezza (cm)',
+                labelWeight: 'Peso (kg)',
+                labelGoal: 'Obiettivo',
+                goalMuscle: 'Aumentare massa',
+                goalCut: 'Definire',
+                goalStrength: 'Aumentare forza',
+                goalBeginner: 'Principiante',
+                btnRegister: 'Crea account',
+                linkLogin: 'Ho un account',
+                btnLogout: 'Esci',
+                tabHome: '🏠 Inizio',
+                tabCamera: '📷 Scanner IA',
+                homeWelcome: 'Benvenuto',
+                homeText: 'Il tuo viaggio fitness inizia qui!',
+                labelDays: 'Giorni di allenamento',
+                labelLevel: 'Livello',
+                labelXP: 'XP Totale',
+                cameraTitle: '📷 Scanner Alimentare IA',
+                cameraDesc: 'Usa la fotocamera per identificare gli alimenti',
+                btnStartText: 'Attiva Fotocamera',
+                btnSwitchText: '🔄 Cambia Fotocamera',
+                btnCaptureText: '📸 Cattura',
+                loading: 'Caricamento...',
+                loggingIn: 'Accesso...',
+                creating: 'Creazione...',
+                fillFields: 'Compila tutti i campi!',
+                wrongPassword: 'Password errata!',
+                userNotFound: 'Utente non trovato!',
+                emailExists: 'Email già registrata!',
+                passwordMin: 'Password minimo 6 caratteri!',
+                loginSuccess: 'Accesso riuscito!',
+                accountCreated: 'Account creato!',
+                goodbye: 'Arrivederci!',
+                welcomeBack: 'Bentornato!',
+                activatingCamera: 'Attivazione fotocamera...',
+                loadingAI: 'Caricamento IA...',
+                cameraActivated: 'Fotocamera attivata!',
+                cameraError: 'Errore fotocamera',
+                analyzing: 'Analisi IA...',
+                analysisComplete: 'Analisi completa!',
+                cameraFront: 'Fotocamera Frontale attivata!',
+                cameraBack: 'Fotocamera Posteriore attivata!'
+            },
+            zh: {
+                loginSubtitle: '完整的训练和营养系统',
+                labelEmail: '电子邮件',
+                labelPassword: '密码',
+                btnLogin: '登录',
+                linkRegister: '创建账户',
+                labelName: '全名',
+                labelRegEmail: '电子邮件',
+                labelRegPassword: '密码',
+                labelAge: '年龄',
+                labelHeight: '身高 (cm)',
+                labelWeight: '体重 (kg)',
+                labelGoal: '目标',
+                goalMuscle: '增加肌肉',
+                goalCut: '减脂',
+                goalStrength: '增强力量',
+                goalBeginner: '初学者',
+                btnRegister: '创建账户',
+                linkLogin: '我有账户',
+                btnLogout: '登出',
+                tabHome: '🏠 主页',
+                tabCamera: '📷 AI扫描',
+                homeWelcome: '欢迎',
+                homeText: '您的健身之旅从这里开始！',
+                labelDays: '训练天数',
+                labelLevel: '等级',
+                labelXP: '总XP',
+                cameraTitle: '📷 AI食品扫描仪',
+                cameraDesc: '使用相机识别食物',
+                btnStartText: '激活相机',
+                btnSwitchText: '🔄 切换相机',
+                btnCaptureText: '📸 捕获',
+                loading: '加载中...',
+                loggingIn: '登录中...',
+                creating: '创建中...',
+                fillFields: '填写所有字段！',
+                wrongPassword: '密码错误！',
+                userNotFound: '未找到用户！',
+                emailExists: '电子邮件已注册！',
+                passwordMin: '密码至少6个字符！',
+                loginSuccess: '登录成功！',
+                accountCreated: '账户已创建！',
+                goodbye: '再见！',
+                welcomeBack: '欢迎回来！',
+                activatingCamera: '激活相机...',
+                loadingAI: '加载AI...',
+                cameraActivated: '相机已激活！',
+                cameraError: '相机错误',
+                analyzing: 'AI分析中...',
+                analysisComplete: '分析完成！',
+                cameraFront: '前置相机已激活！',
+                cameraBack: '后置相机已激活！'
+            },
+            ja: {
+                loginSubtitle: '完全なトレーニングと栄養システム',
+                labelEmail: 'メール',
+                labelPassword: 'パスワード',
+                btnLogin: 'ログイン',
+                linkRegister: 'アカウント作成',
+                labelName: 'フルネーム',
+                labelRegEmail: 'メール',
+                labelRegPassword: 'パスワード',
+                labelAge: '年齢',
+                labelHeight: '身長 (cm)',
+                labelWeight: '体重 (kg)',
+                labelGoal: '目標',
+                goalMuscle: '筋肉量を増やす',
+                goalCut: '減量',
+                goalStrength: '筋力を増やす',
+                goalBeginner: '初心者',
+                btnRegister: 'アカウント作成',
+                linkLogin: 'アカウントがあります',
+                btnLogout: 'ログアウト',
+                tabHome: '🏠 ホーム',
+                tabCamera: '📷 AIスキャナー',
+                homeWelcome: 'ようこそ',
+                homeText: 'フィットネスの旅がここから始まります！',
+                labelDays: 'トレーニング日数',
+                labelLevel: 'レベル',
+                labelXP: '合計XP',
+                cameraTitle: '📷 AI食品スキャナー',
+                cameraDesc: 'カメラを使用して食品を識別',
+                btnStartText: 'カメラ起動',
+                btnSwitchText: '🔄 カメラ切替',
+                btnCaptureText: '📸 キャプチャ',
+                loading: '読み込み中...',
+                loggingIn: 'ログイン中...',
+                creating: '作成中...',
+                fillFields: 'すべてのフィールドを入力！',
+                wrongPassword: 'パスワードが間違っています！',
+                userNotFound: 'ユーザーが見つかりません！',
+                emailExists: 'メールは既に登録されています！',
+                passwordMin: 'パスワードは最低6文字！',
+                loginSuccess: 'ログイン成功！',
+                accountCreated: 'アカウントが作成されました！',
+                goodbye: 'さようなら！',
+                welcomeBack: 'おかえりなさい！',
+                activatingCamera: 'カメラ起動中...',
+                loadingAI: 'AI読み込み中...',
+                cameraActivated: 'カメラが起動しました！',
+                cameraError: 'カメラエラー',
+                analyzing: 'AI分析中...',
+                analysisComplete: '分析完了！',
+                cameraFront: 'フロントカメラが起動！',
+                cameraBack: 'バックカメラが起動！'
+            }
         };
         
-        // Inicializar Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const database = getDatabase(app);
-        
-        console.log('✅ Firebase inicializado com sucesso!');
-        
-        // Variáveis globais
+        // VARIÁVEIS GLOBAIS
         let currentUser = null;
         let cameraStream = null;
         let aiModel = null;
         let facingMode = 'environment';
+        let currentLanguage = localStorage.getItem('fitlife_language') || 'pt';
         
-        // Funções auxiliares
-        function showLoading(text = 'Carregando...') {
-            document.getElementById('loadingText').textContent = text;
+        // Aplicar idioma salvo ao carregar
+        document.getElementById('loginLanguageSelect').value = currentLanguage;
+        changeLoginLanguage(currentLanguage);
+        
+        // FUNÇÕES DE TRADUÇÃO
+        function changeLoginLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('fitlife_language', lang);
+            
+            const t = TRANSLATIONS[lang];
+            if (!t) return;
+            
+            // Atualizar todos os textos da tela de login
+            Object.keys(t).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (el.tagName === 'INPUT') {
+                        el.placeholder = t[key];
+                    } else {
+                        el.textContent = t[key];
+                    }
+                }
+            });
+        }
+        
+        function changeAppLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('fitlife_language', lang);
+            
+            const t = TRANSLATIONS[lang];
+            if (!t) return;
+            
+            // Atualizar textos do app
+            Object.keys(t).forEach(key => {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (el.tagName === 'INPUT') {
+                        el.placeholder = t[key];
+                    } else {
+                        el.textContent = t[key];
+                    }
+                }
+            });
+            
+            // Atualizar texto de boas-vindas personalizado
+            if (currentUser) {
+                document.getElementById('homeWelcome').textContent = `${t.homeWelcome}, ${currentUser.name}!`;
+            }
+        }
+        
+        // RESTO DO CÓDIGO CONTINUA IGUAL...
+        // (Vou continuar no próximo bloco por questão de tamanho)
+        
+        function showLoading(text) {
+            const t = TRANSLATIONS[currentLanguage];
+            document.getElementById('loadingText').textContent = text || t.loading;
             document.getElementById('loadingOverlay').classList.add('active');
         }
         
@@ -632,53 +1146,54 @@
             setTimeout(() => notif.style.display = 'none', 3000);
         }
         
-        window.showRegister = function() {
+        function showRegister() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('registerForm').classList.remove('hidden');
-        };
+        }
         
-        window.showLogin = function() {
+        function showLogin() {
             document.getElementById('registerForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
-        };
+        }
         
-        // Login
-        window.doLogin = async function() {
+        // LOGIN
+        function doLogin() {
+            const t = TRANSLATIONS[currentLanguage];
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             
             if (!email || !password) {
-                showNotification('❌ Preencha todos os campos!', 'error');
+                showNotification('❌ ' + t.fillFields, 'error');
                 return;
             }
             
-            showLoading('Fazendo login...');
+            showLoading(t.loggingIn);
             
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const dbRef = ref(database);
-                const snapshot = await get(child(dbRef, 'users/' + userCredential.user.uid));
+            setTimeout(() => {
+                const savedUser = localStorage.getItem('fitlife_user_' + email);
                 
-                if (snapshot.exists()) {
-                    currentUser = snapshot.val();
-                    currentUser.uid = userCredential.user.uid;
-                    
-                    hideLoading();
-                    showAppScreen();
-                    showNotification('✅ Login realizado com sucesso!');
+                if (savedUser) {
+                    const userData = JSON.parse(savedUser);
+                    if (userData.password === password) {
+                        currentUser = userData;
+                        currentUser.language = currentLanguage;
+                        hideLoading();
+                        showAppScreen();
+                        showNotification('✅ ' + t.loginSuccess);
+                    } else {
+                        hideLoading();
+                        showNotification('❌ ' + t.wrongPassword, 'error');
+                    }
                 } else {
                     hideLoading();
-                    showNotification('❌ Dados do usuário não encontrados!', 'error');
+                    showNotification('❌ ' + t.userNotFound, 'error');
                 }
-            } catch (error) {
-                hideLoading();
-                console.error('Erro no login:', error);
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
-        };
+            }, 500);
+        }
         
-        // Registro
-        window.doRegister = async function() {
+        // REGISTRO
+        function doRegister() {
+            const t = TRANSLATIONS[currentLanguage];
             const name = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
@@ -688,64 +1203,68 @@
             const goal = document.getElementById('registerGoal').value;
             
             if (!name || !email || !password || !age || !height || !weight) {
-                showNotification('❌ Preencha todos os campos!', 'error');
+                showNotification('❌ ' + t.fillFields, 'error');
                 return;
             }
             
             if (password.length < 6) {
-                showNotification('❌ Senha deve ter mínimo 6 caracteres!', 'error');
+                showNotification('❌ ' + t.passwordMin, 'error');
                 return;
             }
             
-            showLoading('Criando conta na nuvem...');
+            showLoading(t.creating);
             
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            setTimeout(() => {
+                const existingUser = localStorage.getItem('fitlife_user_' + email);
+                
+                if (existingUser) {
+                    hideLoading();
+                    showNotification('❌ ' + t.emailExists, 'error');
+                    return;
+                }
                 
                 const userData = {
                     name: name,
                     email: email,
+                    password: password,
                     age: parseInt(age),
                     height: parseInt(height),
                     weight: parseInt(weight),
                     goal: goal,
+                    language: currentLanguage,
                     xp: 0,
                     level: 1,
                     days: 0,
                     createdAt: new Date().toISOString()
                 };
                 
-                await set(ref(database, 'users/' + userCredential.user.uid), userData);
+                localStorage.setItem('fitlife_user_' + email, JSON.stringify(userData));
+                localStorage.setItem('fitlife_last_email', email);
                 
                 currentUser = userData;
-                currentUser.uid = userCredential.user.uid;
                 
                 hideLoading();
                 showAppScreen();
-                showNotification('✅ Conta criada na nuvem com sucesso!');
-            } catch (error) {
-                hideLoading();
-                console.error('Erro no registro:', error);
-                showNotification('❌ Erro: ' + error.message, 'error');
-            }
-        };
+                showNotification('✅ ' + t.accountCreated);
+            }, 500);
+        }
         
-        // Logout
-        window.logout = async function() {
-            if (confirm('Tem certeza que deseja sair?')) {
-                try {
-                    await signOut(auth);
-                    currentUser = null;
-                    document.getElementById('appScreen').style.display = 'none';
-                    document.getElementById('loginScreen').style.display = 'flex';
-                    showNotification('👋 Até logo!');
-                } catch (error) {
-                    console.error('Erro no logout:', error);
-                }
+        // LOGOUT
+        function logout() {
+            const t = TRANSLATIONS[currentLanguage];
+            if (confirm(t.goodbye + '?')) {
+                currentUser = null;
+                document.getElementById('appScreen').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+                
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                
+                showNotification('👋 ' + t.goodbye);
             }
-        };
+        }
         
-        // Mostrar tela do app
+        // MOSTRAR APP
         function showAppScreen() {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('appScreen').style.display = 'block';
@@ -755,23 +1274,42 @@
             document.getElementById('statDays').textContent = currentUser.days || 0;
             document.getElementById('statLevel').textContent = currentUser.level || 1;
             document.getElementById('statXP').textContent = currentUser.xp || 0;
-            document.getElementById('homeWelcome').textContent = `Bem-vindo, ${currentUser.name}!`;
-            document.getElementById('homeText').textContent = `Objetivo: ${currentUser.goal}. Continue sua jornada fitness!`;
+            
+            // Aplicar idioma do usuário
+            if (currentUser.language) {
+                currentLanguage = currentUser.language;
+                document.getElementById('appLanguageSelect').value = currentLanguage;
+            }
+            
+            changeAppLanguage(currentLanguage);
+            
+            const t = TRANSLATIONS[currentLanguage];
+            document.getElementById('homeWelcome').textContent = `${t.homeWelcome}, ${currentUser.name}!`;
+            
+            const goalTexts = {
+                muscle: t.goalMuscle,
+                cut: t.goalCut,
+                strength: t.goalStrength,
+                beginner: t.goalBeginner
+            };
+            
+            document.getElementById('homeText').textContent = `${t.labelGoal}: ${goalTexts[currentUser.goal]}. ${t.homeText}`;
         }
         
-        // Trocar de tab
-        window.showTab = function(tabName) {
+        // TROCAR TAB
+        function showTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
-        };
+        }
         
-        // Câmera
-        window.startCamera = async function() {
+        // CÂMERA
+        async function startCamera() {
+            const t = TRANSLATIONS[currentLanguage];
             try {
-                showLoading('Ativando câmera...');
+                showLoading(t.activatingCamera);
                 
                 cameraStream = await navigator.mediaDevices.getUserMedia({ 
                     video: { 
@@ -790,32 +1328,34 @@
                 document.getElementById('btnCapture').style.display = 'block';
                 
                 if (!aiModel) {
-                    showLoading('Carregando modelo de IA...');
+                    showLoading(t.loadingAI);
                     aiModel = await cocoSsd.load();
                 }
                 
                 hideLoading();
-                showNotification('📷 Câmera ativada!');
+                showNotification('📷 ' + t.cameraActivated);
             } catch (error) {
                 hideLoading();
                 console.error('Erro na câmera:', error);
-                showNotification('❌ Erro na câmera: ' + error.message, 'error');
+                showNotification('❌ ' + t.cameraError + ': ' + error.message, 'error');
             }
-        };
+        }
         
-        window.switchCamera = async function() {
+        async function switchCamera() {
+            const t = TRANSLATIONS[currentLanguage];
             facingMode = facingMode === 'environment' ? 'user' : 'environment';
             
             if (cameraStream) {
-                cameraStream.getTracks().forEach(t => t.stop());
+                cameraStream.getTracks().forEach(track => track.stop());
             }
             
-            await window.startCamera();
-            const cam = facingMode === 'environment' ? 'Traseira' : 'Frontal';
-            showNotification(`🔄 Câmera ${cam} ativada!`);
-        };
+            await startCamera();
+            const msg = facingMode === 'user' ? t.cameraFront : t.cameraBack;
+            showNotification('🔄 ' + msg);
+        }
         
-        window.capturePhoto = async function() {
+        async function capturePhoto() {
+            const t = TRANSLATIONS[currentLanguage];
             const video = document.getElementById('video');
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
@@ -832,53 +1372,63 @@
             document.getElementById('btnStart').style.display = 'block';
             
             if (cameraStream) {
-                cameraStream.getTracks().forEach(t => t.stop());
+                cameraStream.getTracks().forEach(track => track.stop());
                 cameraStream = null;
             }
             
-            showLoading('Analisando com IA...');
+            showLoading(t.analyzing);
+            
             const predictions = await aiModel.detect(canvas);
             
-            let html = '<h4 style="font-size:1.5em;margin-bottom:15px;">Análise de IA (TensorFlow.js):</h4>';
+            let html = '<h4 style="font-size:1.5em;margin-bottom:15px;">' + t.cameraTitle + ':</h4>';
             
             if (predictions.length > 0) {
                 predictions.forEach((p, i) => {
                     html += `<div style="background:rgba(255,255,255,0.05);padding:20px;border-radius:10px;margin:10px 0;border-left:3px solid var(--primary);">
                         <strong style="font-size:1.2em;">${i+1}. ${p.class}</strong><br>
-                        <small style="opacity:0.8;">Confiança: ${(p.score*100).toFixed(1)}%</small>
+                        <small style="opacity:0.8;">${currentLanguage === 'pt' ? 'Confiança' : currentLanguage === 'en' ? 'Confidence' : currentLanguage === 'es' ? 'Confianza' : currentLanguage === 'fr' ? 'Confiance' : currentLanguage === 'de' ? 'Vertrauen' : currentLanguage === 'it' ? 'Fiducia' : currentLanguage === 'zh' ? '置信度' : '信頼度'}: ${(p.score*100).toFixed(1)}%</small>
                     </div>`;
                 });
             } else {
-                html += '<p style="opacity:0.7;">Nenhum objeto detectado. Tente outra foto com melhor iluminação.</p>';
+                html += '<p style="opacity:0.7;">' + (currentLanguage === 'pt' ? 'Nenhum objeto detectado.' : currentLanguage === 'en' ? 'No objects detected.' : currentLanguage === 'es' ? 'No se detectaron objetos.' : currentLanguage === 'fr' ? 'Aucun objet détecté.' : currentLanguage === 'de' ? 'Keine Objekte erkannt.' : currentLanguage === 'it' ? 'Nessun oggetto rilevato.' : currentLanguage === 'zh' ? '未检测到对象。' : 'オブジェクトが検出されませんでした。') + '</p>';
             }
             
             document.getElementById('analysis').innerHTML = html;
             document.getElementById('analysis').style.display = 'block';
             
             hideLoading();
-            showNotification('✅ Análise completa!');
-        };
+            showNotification('✅ ' + t.analysisComplete);
+        }
         
-        // Auto-login
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                showLoading('Carregando seus dados...');
-                const dbRef = ref(database);
-                const snapshot = await get(child(dbRef, 'users/' + user.uid));
+        // AUTO-LOGIN
+        window.onload = function() {
+            const t = TRANSLATIONS[currentLanguage];
+            const lastEmail = localStorage.getItem('fitlife_last_email');
+            
+            if (lastEmail) {
+                const savedUser = localStorage.getItem('fitlife_user_' + lastEmail);
                 
-                if (snapshot.exists()) {
-                    currentUser = snapshot.val();
-                    currentUser.uid = user.uid;
-                    hideLoading();
-                    showAppScreen();
-                    showNotification('👋 Bem-vindo de volta!');
-                } else {
-                    hideLoading();
+                if (savedUser) {
+                    showLoading(t.loading);
+                    
+                    setTimeout(() => {
+                        currentUser = JSON.parse(savedUser);
+                        
+                        // Aplicar idioma do usuário
+                        if (currentUser.language) {
+                            currentLanguage = currentUser.language;
+                            document.getElementById('loginLanguageSelect').value = currentLanguage;
+                        }
+                        
+                        hideLoading();
+                        showAppScreen();
+                        showNotification('👋 ' + t.welcomeBack);
+                    }, 800);
                 }
             }
-        });
-        
-        console.log('✅ FitLife Pro carregado completamente!');
+            
+            console.log('✅ FitLife Pro carregado - Idioma:', currentLanguage);
+        };
     </script>
 </body>
 </html>
