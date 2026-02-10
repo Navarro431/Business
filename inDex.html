@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NutriVision AI - Navegação Completa</title>
+    <title>NutriVision AI - Completo</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -20,25 +20,25 @@
             --danger: #ef4444;
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif; background: var(--background); color: var(--text); }
-        .app { max-width: 420px; margin: 0 auto; background: var(--surface); min-height: 100vh; position: relative; box-shadow: 0 0 50px rgba(0,0,0,0.1); }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--background); color: var(--text); }
+        .app { max-width: 420px; margin: 0 auto; background: var(--surface); min-height: 100vh; box-shadow: 0 0 50px rgba(0,0,0,0.1); }
         .screen { display: none; min-height: 100vh; }
         .screen.active { display: block; }
 
         /* Auth */
         .auth-screen { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 40px 24px; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; }
         .auth-logo { text-align: center; margin-bottom: 48px; }
-        .auth-logo .icon { font-size: 80px; margin-bottom: 16px; }
-        .auth-logo h1 { color: white; font-size: 32px; margin-bottom: 8px; }
-        .auth-logo p { color: rgba(255,255,255,0.9); font-size: 16px; }
+        .auth-logo .icon { font-size: 80px; }
+        .auth-logo h1 { color: white; font-size: 32px; margin: 16px 0 8px; }
+        .auth-logo p { color: rgba(255,255,255,0.9); }
         .auth-card { background: white; border-radius: 24px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
         .auth-card h2 { font-size: 24px; margin-bottom: 24px; text-align: center; }
 
         /* Form */
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-secondary); font-size: 14px; }
-        .form-group input { width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 16px; }
-        .form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
+        .form-group input, .form-group select { width: 100%; padding: 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 16px; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16,185,129,0.1); }
         .form-group.error input { border-color: var(--danger); }
         .form-error { color: var(--danger); font-size: 13px; margin-top: 4px; display: none; }
         .form-group.error .form-error { display: block; }
@@ -46,57 +46,68 @@
         /* Buttons */
         .btn { padding: 16px 24px; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: all 0.3s; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16,185,129,0.3); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-secondary { background: white; color: var(--text); border: 2px solid var(--border); }
         .btn-danger { background: var(--danger); color: white; }
         .btn-link { background: none; border: none; color: var(--primary); font-weight: 600; padding: 8px; cursor: pointer; }
         .text-center { text-align: center; margin-top: 16px; }
 
-        /* Main Layout */
+        /* Onboarding */
+        .onboarding-screen { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 24px; min-height: 100vh; display: flex; flex-direction: column; }
+        .progress-bar { background: rgba(255,255,255,0.2); height: 6px; border-radius: 10px; margin-bottom: 32px; }
+        .progress-fill { background: white; height: 100%; border-radius: 10px; transition: width 0.3s; }
+        .progress-text { color: white; text-align: center; font-size: 14px; margin-bottom: 8px; font-weight: 600; }
+        .onboarding-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .onboarding-question { color: white; font-size: 28px; font-weight: 700; margin-bottom: 32px; text-align: center; }
+        .onboarding-options { display: flex; flex-direction: column; gap: 16px; margin-bottom: 32px; }
+        .option-card { background: white; padding: 24px; border-radius: 16px; cursor: pointer; transition: all 0.3s; border: 3px solid transparent; display: flex; align-items: center; gap: 16px; }
+        .option-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .option-card.selected { border-color: var(--primary); background: linear-gradient(135deg, #f0fdf4, #dcfce7); }
+        .option-icon { font-size: 32px; width: 50px; text-align: center; }
+        .option-text h3 { font-size: 18px; margin-bottom: 4px; }
+        .option-text p { font-size: 14px; color: var(--text-secondary); }
+        .btn-back { background: rgba(255,255,255,0.2); color: white; padding: 12px; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; border: none; margin-bottom: 24px; }
+
+        /* Summary */
+        .summary-card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+        .summary-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-label { color: var(--text-secondary); font-size: 14px; }
+        .summary-value { font-weight: 600; font-size: 16px; }
+        .summary-highlight { background: linear-gradient(135deg, #f0fdf4, #dcfce7); padding: 20px; border-radius: 12px; margin-top: 16px; text-align: center; }
+        .summary-highlight-value { font-size: 48px; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .summary-highlight-label { color: var(--text-secondary); font-size: 14px; margin-top: 8px; }
+
+        /* Main App */
         .main-app { display: flex; flex-direction: column; min-height: 100vh; }
         .header { padding: 20px; background: white; border-bottom: 1px solid var(--border); }
         .header h1 { font-size: 24px; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-subtitle { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
-        .content { flex: 1; padding: 20px; padding-bottom: 90px; overflow-y: auto; }
-
-        /* Cards */
+        .content { flex: 1; padding: 20px; padding-bottom: 90px; }
         .card { background: var(--surface); border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid var(--border); }
         .card-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
 
-        /* Stats */
-        .stat-large { text-align: center; margin: 24px 0; }
-        .stat-value { font-size: 56px; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .stat-sublabel { color: var(--text-secondary); font-size: 16px; margin-top: 4px; }
-
-        /* Progress */
-        .progress-bar-container { background: var(--border); height: 12px; border-radius: 10px; overflow: hidden; margin: 16px 0; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.5s; }
-
-        /* Macros */
-        .macro-rings { display: flex; justify-content: space-around; margin: 24px 0; }
-        .macro-ring { text-align: center; }
-        .ring { width: 90px; height: 90px; border-radius: 50%; background: conic-gradient(var(--primary) 0%, var(--border) 0%); display: flex; align-items: center; justify-content: center; position: relative; margin: 0 auto 12px; }
-        .ring::before { content: ''; width: 70px; height: 70px; background: var(--surface); border-radius: 50%; position: absolute; }
-        .ring-value { position: relative; z-index: 1; font-size: 20px; font-weight: 700; }
-        .ring-label { font-size: 13px; color: var(--text-secondary); font-weight: 600; }
+        /* Camera */
+        .camera-screen { background: #000; position: relative; min-height: 100vh; }
+        #cameraVideo { width: 100%; height: 100vh; object-fit: cover; }
+        #canvas { display: none; }
+        .camera-close { position: absolute; top: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.7); color: white; border: none; font-size: 24px; cursor: pointer; z-index: 10; }
+        .camera-controls { position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: center; gap: 20px; z-index: 10; }
+        .camera-btn { width: 70px; height: 70px; border-radius: 50%; background: white; border: 4px solid rgba(255,255,255,0.5); font-size: 32px; cursor: pointer; }
+        .camera-fallback { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; padding: 40px; color: white; text-align: center; }
+        .camera-fallback h2 { font-size: 24px; margin: 20px 0; }
+        .camera-fallback p { margin-bottom: 24px; }
+        .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; }
+        .file-input-wrapper input[type=file] { position: absolute; left: -9999px; }
+        .file-input-btn { padding: 16px 32px; background: white; color: var(--primary); border-radius: 12px; font-weight: 600; cursor: pointer; }
 
         /* Camera FAB */
-        .camera-fab { position: fixed; bottom: 90px; right: 24px; width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; font-size: 28px; cursor: pointer; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4); z-index: 99; display: flex; align-items: center; justify-content: center; }
-        .camera-fab:active { transform: scale(0.95); }
+        .camera-fab { position: fixed; bottom: 90px; right: 24px; width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; border: none; font-size: 28px; cursor: pointer; box-shadow: 0 4px 20px rgba(16,185,129,0.4); z-index: 99; }
 
-        /* Profile */
-        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 48px; margin: 0 auto 16px; border: 4px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
-        .profile-info { text-align: center; margin-bottom: 24px; }
-        .profile-info h2 { font-size: 24px; margin-bottom: 4px; }
-        .profile-info p { color: var(--text-secondary); }
-
-        /* Empty State */
-        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
-        .empty-state-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
-
-        /* Bottom Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 420px; margin: 0 auto; background: var(--surface); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 8px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-secondary); padding: 8px; border-radius: 12px; transition: all 0.3s; }
-        .nav-item.active { color: var(--primary); background: rgba(16, 185, 129, 0.1); }
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 420px; margin: 0 auto; background: var(--surface); border-top: 1px solid var(--border); display: flex; padding: 8px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: var(--text-secondary); padding: 8px; border-radius: 12px; }
+        .nav-item.active { color: var(--primary); background: rgba(16,185,129,0.1); }
         .nav-icon { font-size: 24px; }
         .nav-label { font-size: 11px; font-weight: 600; }
 
@@ -107,12 +118,19 @@
         .toast.error { background: var(--danger); }
         @keyframes slideDown { from { opacity: 0; transform: translateX(-50%) translateY(-20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
-        /* Camera */
-        .camera-screen { background: #000; position: relative; }
-        #video { width: 100%; height: 100vh; object-fit: cover; }
-        .camera-close { position: absolute; top: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; border: none; font-size: 24px; cursor: pointer; }
-        .camera-controls { position: absolute; bottom: 40px; left: 0; right: 0; display: flex; justify-content: center; }
-        .camera-btn { width: 70px; height: 70px; border-radius: 50%; background: white; border: 4px solid rgba(255,255,255,0.5); font-size: 32px; cursor: pointer; }
+        /* Profile */
+        .profile-avatar { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: flex; align-items: center; justify-content: center; font-size: 48px; margin: 0 auto 16px; }
+        .profile-info { text-align: center; margin-bottom: 24px; }
+
+        /* Empty State */
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-secondary); }
+        .empty-state-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+
+        /* Macro Grid */
+        .macro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+        .macro-item { text-align: center; padding: 16px; background: var(--background); border-radius: 12px; }
+        .macro-value { font-size: 24px; font-weight: 700; color: var(--primary); }
+        .macro-label { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -125,24 +143,24 @@
                 <div class="auth-logo">
                     <div class="icon">🥗</div>
                     <h1>NutriVision AI</h1>
-                    <p>Nutrição Inteligente com IA</p>
+                    <p>Nutrição Inteligente</p>
                 </div>
                 <div class="auth-card">
                     <h2>Entrar</h2>
                     <form id="loginForm">
                         <div class="form-group" id="loginEmailGroup">
                             <label>Email</label>
-                            <input type="email" id="loginEmail" placeholder="seu@email.com" required>
+                            <input type="email" id="loginEmail" required>
                             <span class="form-error">Email inválido</span>
                         </div>
                         <div class="form-group" id="loginPasswordGroup">
                             <label>Senha</label>
-                            <input type="password" id="loginPassword" placeholder="••••••••" required>
+                            <input type="password" id="loginPassword" required>
                             <span class="form-error">Senha incorreta</span>
                         </div>
                         <button type="submit" class="btn btn-primary">Entrar</button>
                         <div class="text-center">
-                            <button type="button" class="btn-link" id="goToRegisterBtn">Não tem conta? Cadastre-se</button>
+                            <button type="button" class="btn-link" id="goToRegisterBtn">Criar conta</button>
                         </div>
                     </form>
                 </div>
@@ -155,35 +173,212 @@
                 <div class="auth-logo">
                     <div class="icon">📝</div>
                     <h1>Criar Conta</h1>
-                    <p>Comece sua jornada saudável</p>
                 </div>
                 <div class="auth-card">
                     <h2>Cadastro</h2>
                     <form id="registerForm">
                         <div class="form-group">
-                            <label>Nome Completo</label>
-                            <input type="text" id="registerName" placeholder="Seu nome" required>
+                            <label>Nome</label>
+                            <input type="text" id="registerName" required>
                         </div>
                         <div class="form-group" id="registerEmailGroup">
                             <label>Email</label>
-                            <input type="email" id="registerEmail" placeholder="seu@email.com" required>
+                            <input type="email" id="registerEmail" required>
                             <span class="form-error">Email inválido</span>
                         </div>
                         <div class="form-group" id="registerPasswordGroup">
                             <label>Senha</label>
-                            <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required>
+                            <input type="password" id="registerPassword" required>
                             <span class="form-error">Mínimo 6 caracteres</span>
                         </div>
                         <div class="form-group" id="registerPasswordConfirmGroup">
                             <label>Confirmar Senha</label>
-                            <input type="password" id="registerPasswordConfirm" placeholder="Confirme sua senha" required>
-                            <span class="form-error">As senhas não coincidem</span>
+                            <input type="password" id="registerPasswordConfirm" required>
+                            <span class="form-error">Senhas não coincidem</span>
                         </div>
                         <button type="submit" class="btn btn-primary">Criar Conta</button>
                         <div class="text-center">
-                            <button type="button" class="btn-link" id="goToLoginBtn">Já tem conta? Entrar</button>
+                            <button type="button" class="btn-link" id="goToLoginBtn">Já tenho conta</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONBOARDING 1: OBJETIVO -->
+        <div class="screen" id="onboarding1Screen">
+            <div class="onboarding-screen">
+                <div>
+                    <div class="progress-text">Passo 1 de 5</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 20%"></div></div>
+                </div>
+                <div class="onboarding-content">
+                    <h2 class="onboarding-question">Qual é o seu objetivo?</h2>
+                    <div class="onboarding-options">
+                        <div class="option-card" onclick="selectGoal('lose')">
+                            <div class="option-icon">🔥</div>
+                            <div class="option-text">
+                                <h3>Perder Peso</h3>
+                                <p>Déficit calórico</p>
+                            </div>
+                        </div>
+                        <div class="option-card" onclick="selectGoal('maintain')">
+                            <div class="option-icon">⚖️</div>
+                            <div class="option-text">
+                                <h3>Manter Peso</h3>
+                                <p>Equilíbrio</p>
+                            </div>
+                        </div>
+                        <div class="option-card" onclick="selectGoal('gain')">
+                            <div class="option-icon">💪</div>
+                            <div class="option-text">
+                                <h3>Ganhar Massa</h3>
+                                <p>Superávit calórico</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="goToOnboarding2()" id="onb1Btn" disabled>Continuar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONBOARDING 2: PESO ATUAL -->
+        <div class="screen" id="onboarding2Screen">
+            <div class="onboarding-screen">
+                <div>
+                    <button class="btn-back" onclick="navigateTo('onboarding1Screen')">←</button>
+                    <div class="progress-text">Passo 2 de 5</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 40%"></div></div>
+                </div>
+                <div class="onboarding-content">
+                    <h2 class="onboarding-question">Qual é o seu peso atual?</h2>
+                    <div class="auth-card">
+                        <div class="form-group">
+                            <label>Peso Atual (kg)</label>
+                            <input type="number" id="currentWeight" placeholder="Ex: 70" min="30" max="300" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label>Altura (cm)</label>
+                            <input type="number" id="height" placeholder="Ex: 170" min="100" max="250">
+                        </div>
+                        <div class="form-group">
+                            <label>Idade</label>
+                            <input type="number" id="age" placeholder="Ex: 25" min="13" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Sexo</label>
+                            <select id="gender">
+                                <option value="male">Masculino</option>
+                                <option value="female">Feminino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="goToOnboarding3()">Continuar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONBOARDING 3: META DE PESO -->
+        <div class="screen" id="onboarding3Screen">
+            <div class="onboarding-screen">
+                <div>
+                    <button class="btn-back" onclick="navigateTo('onboarding2Screen')">←</button>
+                    <div class="progress-text">Passo 3 de 5</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+                </div>
+                <div class="onboarding-content">
+                    <h2 class="onboarding-question" id="weightGoalQuestion">Qual é sua meta?</h2>
+                    <div class="auth-card">
+                        <div class="form-group">
+                            <label id="targetWeightLabel">Peso Meta (kg)</label>
+                            <input type="number" id="targetWeight" placeholder="Ex: 65" min="30" max="300" step="0.1">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="goToOnboarding4()">Continuar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONBOARDING 4: ATIVIDADE -->
+        <div class="screen" id="onboarding4Screen">
+            <div class="onboarding-screen">
+                <div>
+                    <button class="btn-back" onclick="navigateTo('onboarding3Screen')">←</button>
+                    <div class="progress-text">Passo 4 de 5</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 80%"></div></div>
+                </div>
+                <div class="onboarding-content">
+                    <h2 class="onboarding-question">Nível de atividade?</h2>
+                    <div class="onboarding-options">
+                        <div class="option-card" onclick="selectActivity('sedentary')">
+                            <div class="option-icon">🛋️</div>
+                            <div class="option-text"><h3>Sedentário</h3></div>
+                        </div>
+                        <div class="option-card" onclick="selectActivity('light')">
+                            <div class="option-icon">🚶</div>
+                            <div class="option-text"><h3>Levemente Ativo</h3></div>
+                        </div>
+                        <div class="option-card" onclick="selectActivity('moderate')">
+                            <div class="option-icon">🏃</div>
+                            <div class="option-text"><h3>Moderadamente Ativo</h3></div>
+                        </div>
+                        <div class="option-card" onclick="selectActivity('very')">
+                            <div class="option-icon">💪</div>
+                            <div class="option-text"><h3>Muito Ativo</h3></div>
+                        </div>
+                        <div class="option-card" onclick="selectActivity('extra')">
+                            <div class="option-icon">🏋️</div>
+                            <div class="option-text"><h3>Atleta</h3></div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="goToOnboarding5()" id="onb4Btn" disabled>Continuar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ONBOARDING 5: RESUMO -->
+        <div class="screen" id="onboarding5Screen">
+            <div class="onboarding-screen">
+                <div>
+                    <button class="btn-back" onclick="navigateTo('onboarding4Screen')">←</button>
+                    <div class="progress-text">Passo 5 de 5</div>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                </div>
+                <div class="onboarding-content">
+                    <h2 class="onboarding-question">Suas Metas</h2>
+                    <div class="summary-card">
+                        <div class="summary-item">
+                            <span class="summary-label">Objetivo</span>
+                            <span class="summary-value" id="sumGoal">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Peso Atual</span>
+                            <span class="summary-value" id="sumCurrent">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Peso Meta</span>
+                            <span class="summary-value" id="sumTarget">-</span>
+                        </div>
+                        <div class="summary-highlight">
+                            <div class="summary-highlight-value" id="sumCalories">2000</div>
+                            <div class="summary-highlight-label">Calorias Diárias</div>
+                        </div>
+                        <div class="macro-grid">
+                            <div class="macro-item">
+                                <div class="macro-value" id="sumProtein">150g</div>
+                                <div class="macro-label">Proteína</div>
+                            </div>
+                            <div class="macro-item">
+                                <div class="macro-value" id="sumCarbs">250g</div>
+                                <div class="macro-label">Carbos</div>
+                            </div>
+                            <div class="macro-item">
+                                <div class="macro-value" id="sumFat">60g</div>
+                                <div class="macro-label">Gorduras</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="completeOnboarding()">Confirmar e Entrar</button>
                 </div>
             </div>
         </div>
@@ -193,45 +388,17 @@
             <div class="main-app">
                 <div class="header">
                     <h1>Dashboard</h1>
-                    <div class="header-subtitle" id="currentDate">Hoje</div>
                 </div>
                 <div class="content">
                     <div class="card">
                         <div class="card-title">🔥 Calorias Diárias</div>
-                        <div class="stat-large">
-                            <div class="stat-value">0</div>
-                            <div class="stat-sublabel">de 2000 kcal</div>
-                        </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-fill" style="width: 0%"></div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">📊 Macronutrientes</div>
-                        <div class="macro-rings">
-                            <div class="macro-ring">
-                                <div class="ring"><div class="ring-value">0g</div></div>
-                                <div class="ring-label">Proteína</div>
-                            </div>
-                            <div class="macro-ring">
-                                <div class="ring"><div class="ring-value">0g</div></div>
-                                <div class="ring-label">Carbos</div>
-                            </div>
-                            <div class="macro-ring">
-                                <div class="ring"><div class="ring-value">0g</div></div>
-                                <div class="ring-label">Gorduras</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">🍽️ Refeições de Hoje</div>
                         <div class="empty-state">
                             <div class="empty-state-icon">📷</div>
-                            <p>Nenhuma refeição registrada.<br>Toque no botão da câmera!</p>
+                            <p>Tire uma foto da sua refeição<br>para começar!</p>
                         </div>
                     </div>
                 </div>
-                <button class="camera-fab" onclick="navigateToTab('cameraScreen')">📷</button>
+                <button class="camera-fab" onclick="openCamera()">📷</button>
                 <div class="bottom-nav">
                     <div class="nav-item active" onclick="navigateToTab('dashboardScreen')">
                         <span class="nav-icon">🏠</span>
@@ -241,7 +408,7 @@
                         <span class="nav-icon">📖</span>
                         <span class="nav-label">Histórico</span>
                     </div>
-                    <div class="nav-item" onclick="navigateToTab('cameraScreen')">
+                    <div class="nav-item" onclick="openCamera()">
                         <span class="nav-icon">📷</span>
                         <span class="nav-label">Scan</span>
                     </div>
@@ -256,10 +423,22 @@
         <!-- CAMERA -->
         <div class="screen" id="cameraScreen">
             <div class="camera-screen">
-                <video id="video" autoplay playsinline></video>
-                <button class="camera-close" onclick="navigateToTab('dashboardScreen')">✕</button>
+                <video id="cameraVideo" autoplay playsinline></video>
+                <canvas id="canvas"></canvas>
+                <div id="cameraFallback" class="camera-fallback" style="display:none;">
+                    <div class="icon" style="font-size: 80px;">📷</div>
+                    <h2>Câmera não disponível</h2>
+                    <p>Use o upload de imagem para continuar</p>
+                    <div class="file-input-wrapper">
+                        <label class="file-input-btn">
+                            Escolher Foto
+                            <input type="file" id="fileInput" accept="image/*" onchange="handleFileUpload(event)">
+                        </label>
+                    </div>
+                </div>
+                <button class="camera-close" onclick="closeCamera()">✕</button>
                 <div class="camera-controls">
-                    <button class="camera-btn">📷</button>
+                    <button class="camera-btn" onclick="capturePhoto()">📷</button>
                 </div>
             </div>
         </div>
@@ -267,36 +446,20 @@
         <!-- HISTORY -->
         <div class="screen" id="historyScreen">
             <div class="main-app">
-                <div class="header">
-                    <h1>Histórico</h1>
-                    <div class="header-subtitle">Suas refeições</div>
-                </div>
+                <div class="header"><h1>Histórico</h1></div>
                 <div class="content">
                     <div class="card">
-                        <div class="card-title">📅 Esta Semana</div>
                         <div class="empty-state">
                             <div class="empty-state-icon">📊</div>
-                            <p>Nenhuma refeição registrada ainda.</p>
+                            <p>Nenhuma refeição registrada</p>
                         </div>
                     </div>
                 </div>
                 <div class="bottom-nav">
-                    <div class="nav-item" onclick="navigateToTab('dashboardScreen')">
-                        <span class="nav-icon">🏠</span>
-                        <span class="nav-label">Início</span>
-                    </div>
-                    <div class="nav-item active" onclick="navigateToTab('historyScreen')">
-                        <span class="nav-icon">📖</span>
-                        <span class="nav-label">Histórico</span>
-                    </div>
-                    <div class="nav-item" onclick="navigateToTab('cameraScreen')">
-                        <span class="nav-icon">📷</span>
-                        <span class="nav-label">Scan</span>
-                    </div>
-                    <div class="nav-item" onclick="navigateToTab('profileScreen')">
-                        <span class="nav-icon">👤</span>
-                        <span class="nav-label">Perfil</span>
-                    </div>
+                    <div class="nav-item" onclick="navigateToTab('dashboardScreen')"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></div>
+                    <div class="nav-item active" onclick="navigateToTab('historyScreen')"><span class="nav-icon">📖</span><span class="nav-label">Histórico</span></div>
+                    <div class="nav-item" onclick="openCamera()"><span class="nav-icon">📷</span><span class="nav-label">Scan</span></div>
+                    <div class="nav-item" onclick="navigateToTab('profileScreen')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></div>
                 </div>
             </div>
         </div>
@@ -304,10 +467,7 @@
         <!-- PROFILE -->
         <div class="screen" id="profileScreen">
             <div class="main-app">
-                <div class="header">
-                    <h1>Perfil</h1>
-                    <div class="header-subtitle">Suas informações</div>
-                </div>
+                <div class="header"><h1>Perfil</h1></div>
                 <div class="content">
                     <div class="card" style="text-align: center;">
                         <div class="profile-avatar">👤</div>
@@ -316,38 +476,13 @@
                             <p id="profileEmail">email@exemplo.com</p>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">🎯 Suas Metas</div>
-                        <div style="background: var(--background); padding: 16px; border-radius: 12px; margin-top: 12px;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                                <span>Calorias:</span>
-                                <strong>2000 kcal/dia</strong>
-                            </div>
-                            <div style="display: flex; justify-content: space-between;">
-                                <span>Objetivo:</span>
-                                <strong>Manter peso</strong>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-danger" id="logoutBtn">Sair da Conta</button>
+                    <button class="btn btn-danger" onclick="handleLogout()">Sair da Conta</button>
                 </div>
                 <div class="bottom-nav">
-                    <div class="nav-item" onclick="navigateToTab('dashboardScreen')">
-                        <span class="nav-icon">🏠</span>
-                        <span class="nav-label">Início</span>
-                    </div>
-                    <div class="nav-item" onclick="navigateToTab('historyScreen')">
-                        <span class="nav-icon">📖</span>
-                        <span class="nav-label">Histórico</span>
-                    </div>
-                    <div class="nav-item" onclick="navigateToTab('cameraScreen')">
-                        <span class="nav-icon">📷</span>
-                        <span class="nav-label">Scan</span>
-                    </div>
-                    <div class="nav-item active" onclick="navigateToTab('profileScreen')">
-                        <span class="nav-icon">👤</span>
-                        <span class="nav-label">Perfil</span>
-                    </div>
+                    <div class="nav-item" onclick="navigateToTab('dashboardScreen')"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></div>
+                    <div class="nav-item" onclick="navigateToTab('historyScreen')"><span class="nav-icon">📖</span><span class="nav-label">Histórico</span></div>
+                    <div class="nav-item" onclick="openCamera()"><span class="nav-icon">📷</span><span class="nav-label">Scan</span></div>
+                    <div class="nav-item active" onclick="navigateToTab('profileScreen')"><span class="nav-icon">👤</span><span class="nav-label">Perfil</span></div>
                 </div>
             </div>
         </div>
@@ -355,18 +490,24 @@
 
     <script>
         let currentUser = null;
+        let onboardingData = {};
+        let cameraStream = null;
 
         function init() {
-            const storedUser = localStorage.getItem('currentUser');
-            if (storedUser) {
-                currentUser = JSON.parse(storedUser);
-                navigateTo('dashboardScreen');
-                updateProfileData();
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                currentUser = JSON.parse(user);
+                const userData = JSON.parse(localStorage.getItem(`userData_${currentUser.email}`) || 'null');
+                if (!userData || !userData.goals) {
+                    navigateTo('onboarding1Screen');
+                } else {
+                    navigateTo('dashboardScreen');
+                    updateProfile();
+                }
             } else {
                 navigateTo('loginScreen');
             }
             setupEventListeners();
-            updateDate();
         }
 
         function setupEventListeners() {
@@ -374,7 +515,6 @@
             document.getElementById('registerForm').addEventListener('submit', handleRegister);
             document.getElementById('goToRegisterBtn').addEventListener('click', () => navigateTo('registerScreen'));
             document.getElementById('goToLoginBtn').addEventListener('click', () => navigateTo('loginScreen'));
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
         }
 
         function navigateTo(screenId) {
@@ -383,53 +523,34 @@
         }
 
         function navigateToTab(screenId) {
-            if (!currentUser && screenId !== 'loginScreen') {
-                showToast('Faça login para continuar', 'error');
+            if (!currentUser) {
+                showToast('Faça login', 'error');
                 navigateTo('loginScreen');
                 return;
             }
-            if (screenId === 'cameraScreen') openCamera();
             navigateTo(screenId);
-            updateActiveTab(screenId);
-        }
-
-        function updateActiveTab(screenId) {
-            document.querySelectorAll('.bottom-nav').forEach(nav => {
-                nav.querySelectorAll('.nav-item').forEach((item, i) => {
-                    item.classList.remove('active');
-                    if (['dashboardScreen', 'historyScreen', 'cameraScreen', 'profileScreen'][i] === screenId) {
-                        item.classList.add('active');
-                    }
-                });
-            });
         }
 
         function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            
-            if (!email.includes('@')) {
-                showFormError('loginEmail', 'Email inválido');
-                return;
-            }
-            
             const users = JSON.parse(localStorage.getItem('users') || '{}');
             const user = users[email];
-            
             if (!user || user.password !== password) {
-                showFormError('loginPassword', 'Email ou senha incorretos');
+                showToast('Credenciais incorretas', 'error');
                 return;
             }
-            
             currentUser = { name: user.name, email: user.email };
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            showToast(`Bem-vindo, ${user.name}!`, 'success');
-            document.getElementById('loginForm').reset();
-            setTimeout(() => {
+            const userData = JSON.parse(localStorage.getItem(`userData_${email}`) || 'null');
+            if (!userData || !userData.goals) {
+                navigateTo('onboarding1Screen');
+            } else {
+                showToast(`Bem-vindo, ${user.name}!`, 'success');
                 navigateTo('dashboardScreen');
-                updateProfileData();
-            }, 500);
+                updateProfile();
+            }
         }
 
         function handleRegister(e) {
@@ -437,44 +558,156 @@
             const name = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
-            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
-            
-            if (!email.includes('@')) {
-                showFormError('registerEmail', 'Email inválido');
-                return;
-            }
-            
+            const confirm = document.getElementById('registerPasswordConfirm').value;
             if (password.length < 6) {
-                showFormError('registerPassword', 'Mínimo 6 caracteres');
+                showToast('Senha muito curta', 'error');
                 return;
             }
-            
-            if (password !== passwordConfirm) {
-                showFormError('registerPasswordConfirm', 'Senhas não coincidem');
+            if (password !== confirm) {
+                showToast('Senhas não coincidem', 'error');
                 return;
             }
-            
             const users = JSON.parse(localStorage.getItem('users') || '{}');
             if (users[email]) {
-                showFormError('registerEmail', 'Email já cadastrado');
+                showToast('Email já cadastrado', 'error');
                 return;
             }
-            
             users[email] = { name, email, password };
             localStorage.setItem('users', JSON.stringify(users));
-            
             currentUser = { name, email };
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            showToast(`Conta criada! Bem-vindo, ${name}!`, 'success');
-            document.getElementById('registerForm').reset();
-            setTimeout(() => {
-                navigateTo('dashboardScreen');
-                updateProfileData();
-            }, 500);
+            showToast('Conta criada!', 'success');
+            navigateTo('onboarding1Screen');
+        }
+
+        function selectGoal(goal) {
+            onboardingData.goal = goal;
+            document.querySelectorAll('#onboarding1Screen .option-card').forEach(c => c.classList.remove('selected'));
+            event.target.closest('.option-card').classList.add('selected');
+            document.getElementById('onb1Btn').disabled = false;
+        }
+
+        function goToOnboarding2() {
+            if (!onboardingData.goal) return;
+            navigateTo('onboarding2Screen');
+        }
+
+        function goToOnboarding3() {
+            onboardingData.currentWeight = parseFloat(document.getElementById('currentWeight').value);
+            onboardingData.height = parseInt(document.getElementById('height').value);
+            onboardingData.age = parseInt(document.getElementById('age').value);
+            onboardingData.gender = document.getElementById('gender').value;
+            if (!onboardingData.currentWeight || !onboardingData.height || !onboardingData.age) {
+                showToast('Preencha todos os campos', 'error');
+                return;
+            }
+            navigateTo('onboarding3Screen');
+        }
+
+        function goToOnboarding4() {
+            onboardingData.targetWeight = parseFloat(document.getElementById('targetWeight').value);
+            if (!onboardingData.targetWeight) {
+                showToast('Insira o peso meta', 'error');
+                return;
+            }
+            navigateTo('onboarding4Screen');
+        }
+
+        function selectActivity(activity) {
+            onboardingData.activity = activity;
+            document.querySelectorAll('#onboarding4Screen .option-card').forEach(c => c.classList.remove('selected'));
+            event.target.closest('.option-card').classList.add('selected');
+            document.getElementById('onb4Btn').disabled = false;
+        }
+
+        function goToOnboarding5() {
+            if (!onboardingData.activity) return;
+            const goals = calculateTDEE(onboardingData);
+            onboardingData.goals = goals;
+            document.getElementById('sumGoal').textContent = onboardingData.goal === 'lose' ? 'Perder Peso' : onboardingData.goal === 'gain' ? 'Ganhar Massa' : 'Manter Peso';
+            document.getElementById('sumCurrent').textContent = onboardingData.currentWeight + ' kg';
+            document.getElementById('sumTarget').textContent = onboardingData.targetWeight + ' kg';
+            document.getElementById('sumCalories').textContent = goals.calories;
+            document.getElementById('sumProtein').textContent = goals.protein + 'g';
+            document.getElementById('sumCarbs').textContent = goals.carbs + 'g';
+            document.getElementById('sumFat').textContent = goals.fat + 'g';
+            navigateTo('onboarding5Screen');
+        }
+
+        function calculateTDEE(data) {
+            let bmr = data.gender === 'male' 
+                ? (10 * data.currentWeight) + (6.25 * data.height) - (5 * data.age) + 5
+                : (10 * data.currentWeight) + (6.25 * data.height) - (5 * data.age) - 161;
+            const multipliers = { sedentary: 1.2, light: 1.375, moderate: 1.55, very: 1.725, extra: 1.9 };
+            let tdee = bmr * multipliers[data.activity];
+            if (data.goal === 'lose') tdee *= 0.80;
+            else if (data.goal === 'gain') tdee *= 1.10;
+            return {
+                calories: Math.round(tdee),
+                protein: Math.round(data.currentWeight * 2),
+                carbs: Math.round((tdee * 0.45) / 4),
+                fat: Math.round((tdee * 0.30) / 9)
+            };
+        }
+
+        function completeOnboarding() {
+            localStorage.setItem(`userData_${currentUser.email}`, JSON.stringify(onboardingData));
+            showToast('Metas configuradas!', 'success');
+            navigateTo('dashboardScreen');
+            updateProfile();
+        }
+
+        async function openCamera() {
+            navigateTo('cameraScreen');
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                document.getElementById('cameraVideo').srcObject = cameraStream;
+                document.getElementById('cameraVideo').style.display = 'block';
+                document.getElementById('cameraFallback').style.display = 'none';
+                document.querySelector('.camera-controls').style.display = 'flex';
+            } catch (error) {
+                console.error('Erro ao acessar câmera:', error);
+                document.getElementById('cameraVideo').style.display = 'none';
+                document.getElementById('cameraFallback').style.display = 'flex';
+                document.querySelector('.camera-controls').style.display = 'none';
+            }
+        }
+
+        function closeCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            navigateTo('dashboardScreen');
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            const imageData = canvas.toDataURL('image/jpeg');
+            showToast('Foto capturada! (Análise em breve)', 'success');
+            setTimeout(() => closeCamera(), 1000);
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                showToast('Foto enviada! (Análise em breve)', 'success');
+                setTimeout(() => closeCamera(), 1000);
+            }
+        }
+
+        function updateProfile() {
+            if (!currentUser) return;
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileEmail').textContent = currentUser.email;
         }
 
         function handleLogout() {
-            if (confirm('Deseja sair da sua conta?')) {
+            if (confirm('Deseja sair?')) {
                 localStorage.removeItem('currentUser');
                 currentUser = null;
                 showToast('Até logo!', 'success');
@@ -482,40 +715,11 @@
             }
         }
 
-        async function openCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-                document.getElementById('video').srcObject = stream;
-            } catch (error) {
-                showToast('Erro ao acessar câmera', 'error');
-                navigateToTab('dashboardScreen');
-            }
-        }
-
-        function updateProfileData() {
-            if (!currentUser) return;
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileEmail').textContent = currentUser.email;
-        }
-
-        function showFormError(inputId, message) {
-            const group = document.getElementById(inputId + 'Group');
-            group.classList.add('error');
-            group.querySelector('.form-error').textContent = message;
-            setTimeout(() => group.classList.remove('error'), 5000);
-        }
-
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = `toast ${type} show`;
             setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
-        function updateDate() {
-            const today = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-            const el = document.getElementById('currentDate');
-            if (el) el.textContent = today.charAt(0).toUpperCase() + today.slice(1);
         }
 
         window.addEventListener('load', init);
